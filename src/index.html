@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>C 语言语法速查</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-title">
+        <p class="eyebrow">LOCAL REFERENCE</p>
+        <h1>C 语言语法速查</h1>
+        <p class="subtitle">离线查询语法、示例与常见陷阱</p>
+        <div class="course-links">
+          <a class="course-link" href="https://www.bilibili.com/video/BV1Ls411w7rx/"
+            target="_blank" rel="noopener noreferrer">🎬 看网课（浙大翁恺）</a>
+          <a class="course-link" href="https://space.bilibili.com/535834809"
+            target="_blank" rel="noopener noreferrer">🎓 看网课（山大陈千）</a>
+          <div class="theme-slider" role="radiogroup" aria-label="主题">
+            <span class="theme-slider-thumb" aria-hidden="true"></span>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1"
+              data-theme-value="light">浅色</button>
+            <button type="button" role="radio" aria-checked="true" tabindex="0"
+              data-theme-value="blue">蓝色</button>
+            <button type="button" role="radio" aria-checked="false" tabindex="-1"
+              data-theme-value="dark">深色</button>
+          </div>
+        </div>
+      </div>
+      <div class="search-wrap">
+        <label class="sr-only" for="search-input">搜索语法条目</label>
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input id="search-input" type="search" autocomplete="off" spellcheck="false"
+          placeholder="搜索关键字、语法或示例…" aria-keyshortcuts="/ Control+K">
+        <kbd class="search-shortcut">/</kbd>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="sidebar" aria-label="语法条目列表">
+      <div class="filter-row">
+        <label for="category-select">分类</label>
+        <select id="category-select"></select>
+      </div>
+      <div class="filter-row">
+        <label for="header-select">头文件</label>
+        <select id="header-select"></select>
+      </div>
+      <details id="stage-directory" class="stage-directory" hidden>
+        <summary>跳到学习步骤</summary>
+        <div id="stage-directory-list" class="stage-directory-list"></div>
+      </details>
+      <section class="practice-sites" aria-labelledby="practice-sites-title">
+        <h2 id="practice-sites-title">在线刷题</h2>
+        <div class="practice-site-links">
+          <a href="https://leetcode.cn/" target="_blank" rel="noopener noreferrer">LeetCode 刷题</a>
+          <a href="https://www.luogu.com.cn/" target="_blank" rel="noopener noreferrer">洛谷刷题</a>
+        </div>
+      </section>
+      <p id="result-count" class="result-count" aria-live="polite"></p>
+      <div id="empty-state" class="empty-state" hidden>
+        <p id="empty-message"></p>
+        <button id="clear-search" type="button">清空搜索</button>
+      </div>
+      <ul id="result-list" class="result-list" role="listbox" aria-label="搜索结果"></ul>
+    </aside>
+
+    <section id="detail-panel" class="detail-panel" aria-live="polite" aria-label="条目详情">
+      <div class="welcome-card">
+        <span class="welcome-symbol" aria-hidden="true">C</span>
+        <h2>选择一个条目开始</h2>
+        <p>可输入“指针”“printf”“struct”或“循环”，也可按分类浏览。</p>
+        <p class="key-hint"><kbd>↑</kbd><kbd>↓</kbd> 选择　<kbd>Enter</kbd> 打开　<kbd>Esc</kbd> 清空</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <script src="data/c-syntax-data.js"></script>
+  <script src="data/learning-path.js"></script>
+  <script src="data/entries/01-roadmap.js"></script>
+  <script src="data/entries/05-beginner.js"></script>
+  <script src="data/entries/03-tools.js"></script>
+  <script src="data/entries/00-syntax.js"></script>
+  <script src="data/entries/10-stdio.js"></script>
+  <script src="data/entries/15-practice.js"></script>
+  <script src="data/entries/20-stdlib.js"></script>
+  <script src="data/entries/30-string.js"></script>
+  <script src="data/entries/35-ctype.js"></script>
+  <script src="data/entries/40-math.js"></script>
+  <script src="data/entries/50-time-and-headers.js"></script>
+  <script src="data/entries/90-pitfalls.js"></script>
+  <script src="data/exercises/10-basics.js"></script>
+  <script src="data/exercises/20-advanced.js"></script>
+  <script src="data/keywords.generated.js"></script>
+  <script src="app.js"></script>
+  <script src="chat.js"></script>
+</body>
+</html>
