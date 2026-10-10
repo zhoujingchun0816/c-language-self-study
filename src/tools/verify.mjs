@@ -860,10 +860,27 @@ check(/EXERCISE_DRAFTS_KEY\s*=\s*["']csyntax\.exercise\.drafts["']/.test(appSour
 
 const stylesSource = existsSync(join(root, "styles.css")) ? readFileSync(join(root, "styles.css"), "utf8") : "";
 const chatPanelRule = stylesSource.match(/\.chat-panel\s*\{[\s\S]*?\}/)?.[0] || "";
-check(/resize:\s*both/.test(chatPanelRule) && /overflow:\s*hidden/.test(chatPanelRule) &&
+check(/resize:\s*none/.test(chatPanelRule) && !/resize:\s*both/.test(chatPanelRule) && /overflow:\s*hidden/.test(chatPanelRule) &&
   /min-width:\s*320px/.test(chatPanelRule) && /min-height:\s*320px/.test(chatPanelRule) &&
   /max-width:/.test(chatPanelRule) && /max-height:/.test(chatPanelRule),
-  "DeepSeek 面板支持双向缩放，并具有最小/最大尺寸与单层滚动限制");
+  "DeepSeek 面板关闭原生 resize，并保留最小/最大尺寸与单层滚动限制");
+
+const desktopChatBlocks = cssBlocks(stylesSource, /@media\s*\(\s*min-width\s*:\s*761px\s*\)\s*\{/gi);
+const mobileChatBlocks = cssBlocks(stylesSource, /@media\s*\(\s*max-width\s*:\s*760px\s*\)\s*\{/gi);
+const desktopChatCss = desktopChatBlocks.map(block => block.body).join("\n");
+const mobileChatCss = mobileChatBlocks.map(block => block.body).join("\n");
+check(/\.chat-resize-handle\s*\{[^{}]*display:\s*block/.test(desktopChatCss) &&
+  /\.chat-resize-handle\s*\{[^{}]*display:\s*none/.test(mobileChatCss),
+  "DeepSeek 缩放手柄仅在桌面端显示，移动端明确隐藏");
+check(/\.chat-panel\s*\{[^{}]*max-height:\s*88vh[^{}]*resize:\s*none/.test(mobileChatCss) &&
+  !/resize:\s*(?:both|vertical)/.test(mobileChatCss) && /\.chat-maximize\s*\{[^{}]*display:\s*none/.test(mobileChatCss),
+  "DeepSeek 移动端保持整宽底部面板、88vh 上限、禁止缩放并隐藏放大按钮");
+check(/touch-action:\s*none/.test(stylesSource) &&
+  /\.chat-resize-n,\s*\.chat-resize-s/.test(desktopChatCss) && /cursor:\s*ns-resize/.test(desktopChatCss) &&
+  /\.chat-resize-e,\s*\.chat-resize-w/.test(desktopChatCss) && /cursor:\s*ew-resize/.test(desktopChatCss) &&
+  /\.chat-resize-ne\s*\{[^{}]*cursor:\s*nesw-resize/.test(desktopChatCss) &&
+  /\.chat-resize-nw\s*\{[^{}]*cursor:\s*nwse-resize/.test(desktopChatCss),
+  "DeepSeek 手柄使用 touch-action:none，并为边与角设置正确 resize 光标");
 
 // ---------------- 默认蓝色 / 三档滑块 / 黑灰深色主题 ----------------
 const headerSource = indexSource.match(/<header\b[\s\S]*?<\/header>/i)?.[0] || "";
@@ -1013,9 +1030,10 @@ const palettes = { light: explicitLightPalette, blue: explicitBluePalette, dark:
 const paletteVariableNames = Object.keys(explicitLightPalette).sort();
 const completePalettes = paletteNames.every(name => JSON.stringify(Object.keys(palettes[name]).sort()) === JSON.stringify(paletteVariableNames)) &&
   JSON.stringify(Object.keys(rootPalette).sort()) === JSON.stringify(paletteVariableNames);
+// 蓝色主题的页面底是蓝、内容面板是米白，用浅色 color-scheme 才能让系统滚动条/表单控件不再是一条黑杠（v1.32 起）
 check(rootBlocks.length === 1 && rootPalette["--bg"]?.toLowerCase() === "#5a8cd7" &&
-  rootPalette["--color-scheme"] === "dark" && JSON.stringify(rootPalette) === JSON.stringify(explicitBluePalette),
-  "主题检查 6/10：:root 默认调色板完整等于 blue，--bg=#5A8CD7，不读取系统深浅色");
+  rootPalette["--color-scheme"] === "light" && JSON.stringify(rootPalette) === JSON.stringify(explicitBluePalette),
+  "主题检查 6/10：:root 默认调色板完整等于 blue，--bg=#5a8cd7，color-scheme=light（避免系统深色滚动条），不读取系统深浅色");
 
 check(explicitLightBlocks.length === 1 && explicitBlueBlocks.length === 1 && explicitDarkBlocks.length === 1 &&
   explicitLightPalette["--bg"]?.toLowerCase() === "#ffffff" &&
@@ -1149,6 +1167,20 @@ if (chatSource) {
     /panelSize:\s*panelSize/.test(chatSource) && /setPanelSize:\s*setPanelSize/.test(chatSource) &&
     /applyStoredPanelSize:\s*applyStoredPanelSize/.test(chatSource),
     "面板尺寸使用指定 localStorage 键持久化，并暴露读取、设置与恢复钩子");
+  const resizeDirectionMatch = chatSource.match(/RESIZE_DIRECTIONS\s*=\s*\[([^\]]+)\]/)?.[1] || "";
+  const resizeDirections = [...resizeDirectionMatch.matchAll(/["'](n|s|e|w|ne|nw|se|sw)["']/g)].map(match => match[1]);
+  check(new Set(resizeDirections).size === 8 &&
+    /setAttribute\(["']data-resize["'],\s*direction\)/.test(chatSource),
+    "DeepSeek 面板创建 n/s/e/w/ne/nw/se/sw 八个 data-resize 手柄");
+  check(/addEventListener\(["']pointerdown["'],\s*beginPanelResize\)/.test(chatSource) &&
+    /addEventListener\(["']pointermove["'],\s*movePanelResize\)/.test(chatSource) &&
+    /addEventListener\(["']pointerup["'],\s*finishPanelResize\)/.test(chatSource) &&
+    /function finishPanelResize[\s\S]*?writeStorage\(CHAT_CONFIG\.panelSizeStorageKey/.test(chatSource),
+    "DeepSeek 拖拽使用 pointerdown/pointermove/pointerup，结束函数负责持久化");
+  check(/chat-maximize/.test(chatSource) && /aria-pressed/.test(chatSource) &&
+    /aria-label["'],\s*["']放大 DeepSeek 对话面板/.test(chatSource) &&
+    /addEventListener\(["']dblclick["']/.test(chatSource) && /preMaximizeSize/.test(chatSource),
+    "DeepSeek 标题栏有中文无障碍放大按钮、aria-pressed、双击切换与放大前尺寸状态");
   check(/chat-model-badge/.test(chatSource) && !/modelSelect/.test(chatSource),
     "模型是不可选的静态标签（不给用户选到不支持的 id 的机会）");
   check(/staleModelNames/.test(chatSource) && /storedModel/.test(chatSource) && /检测到不被支持的模型名/.test(chatSource),
@@ -1232,6 +1264,196 @@ try {
   }
 } catch (error) {
   fail(`chat.js 可测钩子自检：${error.stack || error.message}`);
+}
+
+try {
+  const values = new Map();
+  const storageWrites = [];
+  const windowListeners = new Map();
+  class StubElement {
+    constructor(tagName, panelWindow) {
+      this.tagName = String(tagName).toUpperCase();
+      this.ownerWindow = panelWindow;
+      this.children = [];
+      this.listeners = new Map();
+      this.attributes = new Map();
+      this.style = {};
+      this.hidden = false;
+      this.className = "";
+      this.textContent = "";
+      this.value = "";
+    }
+    appendChild(child) { this.children.push(child); child.parentNode = this; return child; }
+    replaceChildren(...children) { this.children = children; }
+    setAttribute(name, value) { this.attributes.set(name, String(value)); }
+    getAttribute(name) { return this.attributes.get(name) || null; }
+    addEventListener(type, listener) {
+      if (!this.listeners.has(type)) this.listeners.set(type, []);
+      this.listeners.get(type).push(listener);
+    }
+    dispatch(type, properties = {}) {
+      const event = { type, target: this, currentTarget: this, preventDefault() {}, ...properties };
+      for (const listener of this.listeners.get(type) || []) listener(event);
+    }
+    click() { this.dispatch("click"); }
+    focus() {}
+    closest(selector) { return selector === "button" && this.tagName === "BUTTON" ? this : null; }
+    setPointerCapture() {}
+    releasePointerCapture() {}
+    getBoundingClientRect() {
+      if (this.className === "chat-panel" && this.hidden) {
+        return { width: 0, height: 0, right: 0, bottom: 0, left: 0, top: 0 };
+      }
+      const width = Number.parseFloat(this.style.width) || (this.className === "chat-panel" ? 420 : 0);
+      const height = Number.parseFloat(this.style.height) || (this.className === "chat-panel" ? 620 : 0);
+      const rightOffset = Number.parseFloat(this.style.right);
+      const bottomOffset = Number.parseFloat(this.style.bottom);
+      const right = this.ownerWindow.innerWidth - (Number.isFinite(rightOffset) ? rightOffset : 20);
+      const bottom = this.ownerWindow.innerHeight - (Number.isFinite(bottomOffset) ? bottomOffset : 78);
+      return { width, height, right, bottom, left: right - width, top: bottom - height };
+    }
+  }
+  const localStorage = {
+    getItem(key) { return values.has(key) ? values.get(key) : null; },
+    setItem(key, value) { values.set(key, String(value)); storageWrites.push({ key, value: String(value) }); },
+    removeItem(key) { values.delete(key); storageWrites.push({ key, value: null }); }
+  };
+  const panelWindow = {
+    innerWidth: 1200,
+    innerHeight: 900,
+    localStorage,
+    addEventListener(type, listener) {
+      if (!windowListeners.has(type)) windowListeners.set(type, []);
+      windowListeners.get(type).push(listener);
+    },
+    dispatchEvent() {}
+  };
+  const document = {
+    body: new StubElement("body", panelWindow),
+    createElement(tagName) { return new StubElement(tagName, panelWindow); }
+  };
+  panelWindow.document = document;
+  const panelContext = {
+    window: panelWindow,
+    document,
+    console: { warn() {} },
+    CustomEvent: class CustomEvent {},
+    setTimeout,
+    clearTimeout
+  };
+  vm.createContext(panelContext);
+  vm.runInContext(chatSource, panelContext, { filename: "chat.js" });
+  const panelChat = panelWindow.C_SYNTAX_CHAT;
+  const panelElements = panelChat.elements();
+  const panel = panelElements.panel;
+  const panelSizeKey = panelChat.config.panelSizeStorageKey;
+  const initialHiddenPosition = { right: panel.style.right || "", bottom: panel.style.bottom || "" };
+  panel.style.right = "37px";
+  panel.style.bottom = "91px";
+  panelChat.applyStoredPanelSize();
+  const preservedHiddenPosition = { right: panel.style.right, bottom: panel.style.bottom };
+  check(panel.hidden && initialHiddenPosition.right === "" && initialHiddenPosition.bottom === "" &&
+    preservedHiddenPosition.right === "37px" && preservedHiddenPosition.bottom === "91px" &&
+    preservedHiddenPosition.right !== `${panelWindow.innerWidth - 420}px` &&
+    preservedHiddenPosition.bottom !== `${panelWindow.innerHeight - 620}px`,
+  `DeepSeek 隐藏状态全 0 矩形不反推位置：初始 right="${initialHiddenPosition.right}" bottom="${initialHiddenPosition.bottom}"；已有内联值保持 ${preservedHiddenPosition.right}/${preservedHiddenPosition.bottom}`);
+
+  panel.style.right = "";
+  panel.style.bottom = "";
+  panelChat.open();
+  const defaultOpenRect = panel.getBoundingClientRect();
+  check(defaultOpenRect.width === 420 && defaultOpenRect.height === 620 &&
+    defaultOpenRect.right === panelWindow.innerWidth - 20 && defaultOpenRect.bottom === panelWindow.innerHeight - 78,
+  `DeepSeek 无保存尺寸打开位于右下角：${defaultOpenRect.width}x${defaultOpenRect.height}，right=${defaultOpenRect.right}（期望 ${panelWindow.innerWidth - 20}），bottom=${defaultOpenRect.bottom}（期望 ${panelWindow.innerHeight - 78}）`);
+
+  panelElements.close.click();
+  values.set(panelSizeKey, JSON.stringify({ width: 540, height: 530 }));
+  panelChat.open();
+  const storedOpenRect = panel.getBoundingClientRect();
+  check(JSON.stringify(panelChat.panelSize()) === JSON.stringify({ width: 540, height: 530 }) &&
+    storedOpenRect.right === panelWindow.innerWidth - 20 && storedOpenRect.bottom === panelWindow.innerHeight - 78,
+  `DeepSeek 旧 {width,height} 存储兼容且打开位于右下角：${storedOpenRect.width}x${storedOpenRect.height}，right=${storedOpenRect.right}，bottom=${storedOpenRect.bottom}`);
+
+  const directionDeltas = {
+    n: [0, -40], s: [0, 40], e: [40, 0], w: [-40, 0],
+    ne: [40, -40], nw: [-40, -40], se: [40, 40], sw: [-40, 40]
+  };
+  const directionResults = [];
+  for (const direction of ["n", "s", "e", "w", "ne", "nw", "se", "sw"]) {
+    panelChat.state.maximized = false;
+    // 留出足够的四边拖拽空间，避免视口边界夹紧与“对边固定”互相冲突。
+    panel.style.right = "100px";
+    panel.style.bottom = "150px";
+    panelChat.setPanelSize(420, 620);
+    storageWrites.length = 0;
+    const handle = panelElements.resizeHandles.find(item => item.getAttribute("data-resize") === direction);
+    const [deltaX, deltaY] = directionDeltas[direction];
+    const startRect = panel.getBoundingClientRect();
+    handle.dispatch("pointerdown", { pointerId: 7, button: 0, clientX: 500, clientY: 400 });
+    handle.dispatch("pointermove", { pointerId: 7, clientX: 500 + deltaX, clientY: 400 + deltaY });
+    const writesDuringMove = storageWrites.filter(item => item.key === panelChat.config.panelSizeStorageKey).length;
+    const movedSize = panelChat.panelSize();
+    const movedRect = panel.getBoundingClientRect();
+    handle.dispatch("pointerup", { pointerId: 7, clientX: 500 + deltaX, clientY: 400 + deltaY });
+    const sizeWrites = storageWrites.filter(item => item.key === panelChat.config.panelSizeStorageKey);
+    const expectedWidth = direction.includes("e") || direction.includes("w") ? 460 : 420;
+    const expectedHeight = direction.includes("n") || direction.includes("s") ? 660 : 620;
+    const horizontalFixed = direction.includes("e") ? movedRect.left === startRect.left :
+      direction.includes("w") ? movedRect.right === startRect.right :
+        movedRect.left === startRect.left && movedRect.right === startRect.right;
+    const verticalFixed = direction.includes("s") ? movedRect.top === startRect.top :
+      direction.includes("n") ? movedRect.bottom === startRect.bottom :
+        movedRect.top === startRect.top && movedRect.bottom === startRect.bottom;
+    check(movedSize.width === expectedWidth && movedSize.height === expectedHeight && horizontalFixed && verticalFixed &&
+      writesDuringMove === 0 && sizeWrites.length === 1,
+    `DeepSeek 拖拽 ${direction}：420x620 → ${movedSize.width}x${movedSize.height}，对边固定=${horizontalFixed && verticalFixed}，move 写入 ${writesDuringMove} 次，pointerup 写入 ${sizeWrites.length} 次`);
+    directionResults.push(`${direction}=${movedSize.width}x${movedSize.height}`);
+  }
+  console.log(`INFO 八方向拖拽原始结果：${directionResults.join("；")}`);
+
+  const minimum = panelChat.resizedPanelSize("nw", { width: 320, height: 320 }, 9999, 9999);
+  const maximum = panelChat.resizedPanelSize("se", { width: 420, height: 620 }, 9999, 9999);
+  check(minimum.width === 320 && minimum.height === 320 && maximum.width === 900 && maximum.height === 828,
+    `DeepSeek 拖拽夹紧：最小 ${minimum.width}x${minimum.height}；最大 ${maximum.width}x${maximum.height}`);
+
+  panelChat.state.maximized = false;
+  panelChat.setPanelSize(500, 500);
+  storageWrites.length = 0;
+  const normalSize = panelChat.panelSize();
+  const maximizedSize = panelChat.togglePanelMaximize();
+  const maximizedPressed = panelElements.maximize.getAttribute("aria-pressed");
+  panelWindow.innerWidth = 800;
+  panelWindow.innerHeight = 600;
+  for (const listener of windowListeners.get("resize") || []) listener();
+  const clampedMaximizedSize = panelChat.panelSize();
+  const rememberedSize = { ...panelChat.state.preMaximizeSize };
+  const restoredSize = panelChat.togglePanelMaximize();
+  const restoredPressed = panelElements.maximize.getAttribute("aria-pressed");
+  check(normalSize.width === 500 && normalSize.height === 500 && maximizedSize.width === 900 && maximizedSize.height === 828 &&
+    clampedMaximizedSize.width === 768 && clampedMaximizedSize.height === 552 && rememberedSize.width === 500 && rememberedSize.height === 500 &&
+    restoredSize.width === 500 && restoredSize.height === 500 && maximizedPressed === "true" && restoredPressed === "false",
+    `DeepSeek 放大序列：${normalSize.width}x${normalSize.height} → ${maximizedSize.width}x${maximizedSize.height} → 窗口夹紧 ${clampedMaximizedSize.width}x${clampedMaximizedSize.height} → 还原 ${restoredSize.width}x${restoredSize.height}`);
+
+  panelElements.header.dispatch("dblclick", { target: panelElements.header });
+  const doubleClickMaximized = panelChat.state.maximized;
+  panelElements.header.dispatch("dblclick", { target: panelElements.header });
+  const doubleClickRestored = !panelChat.state.maximized && panelChat.panelSize().width === 500 && panelChat.panelSize().height === 500;
+  check(doubleClickMaximized && doubleClickRestored,
+    `DeepSeek 双击标题栏放大/还原：放大=${doubleClickMaximized}，还原=${doubleClickRestored}`);
+
+  panel.style.right = "999px";
+  panel.style.bottom = "999px";
+  for (const listener of windowListeners.get("resize") || []) listener();
+  const clampedTopLeftRect = panel.getBoundingClientRect();
+  panel.style.right = "-100px";
+  panel.style.bottom = "-100px";
+  for (const listener of windowListeners.get("resize") || []) listener();
+  const clampedBottomRightRect = panel.getBoundingClientRect();
+  check(clampedTopLeftRect.left >= 0 && clampedTopLeftRect.top >= 0 &&
+    clampedBottomRightRect.right <= panelWindow.innerWidth && clampedBottomRightRect.bottom <= panelWindow.innerHeight,
+  `DeepSeek 越界夹紧：左上 (${clampedTopLeftRect.left},${clampedTopLeftRect.top})；右下 (${clampedBottomRightRect.right},${clampedBottomRightRect.bottom}) / 视口 ${panelWindow.innerWidth}x${panelWindow.innerHeight}`);
+} catch (error) {
+  fail(`DeepSeek 面板拖拽/放大 DOM 桩自检：${error.stack || error.message}`);
 }
 
 try {

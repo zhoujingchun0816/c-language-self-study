@@ -202,7 +202,10 @@
 
   // ------------------------------------------------------------------ DOM
   var els = {};
-  var state = { history: [], busy: false, controller: null, keyDraft: "", panelSize: null, panelObserver: null };
+  var state = {
+    history: [], busy: false, controller: null, keyDraft: "", panelSize: null,
+    maximized: false, preMaximizeSize: null, resizeSession: null
+  };
   var PANEL_DEFAULT_WIDTH = 420;
   var PANEL_DEFAULT_HEIGHT = 620;
   var PANEL_MIN_WIDTH = 320;
@@ -211,6 +214,9 @@
   var PANEL_VIEWPORT_WIDTH_RATIO = 0.96;
   var PANEL_VIEWPORT_HEIGHT_RATIO = 0.92;
   var PANEL_NARROW_BREAKPOINT = 760;
+  var PANEL_DEFAULT_RIGHT = 20;
+  var PANEL_DEFAULT_BOTTOM = 78;
+  var RESIZE_DIRECTIONS = ["n", "s", "e", "w", "ne", "nw", "se", "sw"];
 
   function viewportSize() {
     return {
@@ -231,9 +237,47 @@
     if (!Number.isFinite(numericWidth)) numericWidth = PANEL_DEFAULT_WIDTH;
     if (!Number.isFinite(numericHeight)) numericHeight = PANEL_DEFAULT_HEIGHT;
     return {
-      width: Math.round(narrow ? viewport.width : Math.min(maxWidth, Math.max(minWidth, numericWidth))),
+      // 窄屏由 CSS 强制整宽；内存里保留桌面宽度，避免手机打开一次就覆盖桌面偏好。
+      width: Math.round(narrow ? Math.min(PANEL_MAX_WIDTH, Math.max(PANEL_MIN_WIDTH, numericWidth)) :
+        Math.min(maxWidth, Math.max(minWidth, numericWidth))),
       height: Math.round(Math.min(maxHeight, Math.max(minHeight, numericHeight)))
     };
+  }
+
+  function maximumPanelSize() {
+    var viewport = viewportSize();
+    return normalizePanelSize(Math.min(PANEL_MAX_WIDTH, viewport.width * PANEL_VIEWPORT_WIDTH_RATIO),
+      viewport.height * PANEL_VIEWPORT_HEIGHT_RATIO);
+  }
+
+  function isDesktopPanel() {
+    return viewportSize().width > PANEL_NARROW_BREAKPOINT;
+  }
+
+  function clampPanelPosition(size) {
+    if (!els.panel || !els.panel.style || !isDesktopPanel()) return;
+    var viewport = viewportSize();
+    var rect = typeof els.panel.getBoundingClientRect === "function" ? els.panel.getBoundingClientRect() : null;
+    var trustworthyRect = !els.panel.hidden && rect && Number.isFinite(rect.width) && rect.width >= 1 &&
+      Number.isFinite(rect.height) && rect.height >= 1 && Number.isFinite(rect.right) && Number.isFinite(rect.bottom);
+    // hidden/display:none 会得到全 0 矩形；此时绝不能用“视口 - 0”反推位置。
+    // 保留现有内联值（没有内联值时继续由样式表的 20px / 78px 生效），等面板可见后再夹紧。
+    if (!trustworthyRect) return;
+    var right = viewport.width - rect.right;
+    var bottom = viewport.height - rect.bottom;
+    if (!Number.isFinite(right)) right = parseFloat(els.panel.style.right);
+    if (!Number.isFinite(bottom)) bottom = parseFloat(els.panel.style.bottom);
+    if (!Number.isFinite(right)) right = PANEL_DEFAULT_RIGHT;
+    if (!Number.isFinite(bottom)) bottom = PANEL_DEFAULT_BOTTOM;
+    els.panel.style.right = Math.round(Math.min(Math.max(0, viewport.width - rect.width), Math.max(0, right))) + "px";
+    els.panel.style.bottom = Math.round(Math.min(Math.max(0, viewport.height - rect.height), Math.max(0, bottom))) + "px";
+  }
+
+  function resetPanelPosition() {
+    if (!els.panel || !els.panel.style) return;
+    // 每次打开都回到样式表定义的右下角；空字符串会恢复 CSS 的 20px / 78px。
+    els.panel.style.right = "";
+    els.panel.style.bottom = "";
   }
 
   function applyPanelSize(size) {
@@ -259,7 +303,10 @@
 
   function setPanelSize(width, height) {
     var size = applyPanelSize({ width: width, height: height });
-    writeStorage(CHAT_CONFIG.panelSizeStorageKey, JSON.stringify(size));
+    clampPanelPosition(size);
+    if (!state.maximized && isDesktopPanel()) {
+      writeStorage(CHAT_CONFIG.panelSizeStorageKey, JSON.stringify(size));
+    }
     return size;
   }
 
@@ -274,18 +321,102 @@
       } catch (error) { /* 非法尺寸按默认值恢复。 */ }
     }
     var size = applyPanelSize(stored || { width: PANEL_DEFAULT_WIDTH, height: PANEL_DEFAULT_HEIGHT });
-    if (raw) {
+    if (raw && isDesktopPanel()) {
       if (stored) writeStorage(CHAT_CONFIG.panelSizeStorageKey, JSON.stringify(size));
       else writeStorage(CHAT_CONFIG.panelSizeStorageKey, null);
     }
     return size;
   }
 
-  function rememberRenderedPanelSize() {
-    if (!els.panel || els.panel.hidden || typeof els.panel.getBoundingClientRect !== "function") return;
+  function updateMaximizeButton() {
+    if (!els.maximize) return;
+    var label = state.maximized ? "还原" : "放大";
+    els.maximize.setAttribute("aria-pressed", state.maximized ? "true" : "false");
+    els.maximize.setAttribute("aria-label", label + " DeepSeek 对话面板");
+    els.maximize.textContent = (state.maximized ? "↙ " : "↗ ") + label;
+  }
+
+  function togglePanelMaximize() {
+    if (!isDesktopPanel()) return panelSize();
+    var size;
+    if (!state.maximized) {
+      state.preMaximizeSize = panelSize();
+      state.maximized = true;
+      size = applyPanelSize(maximumPanelSize());
+    } else {
+      var restoreSize = state.preMaximizeSize || { width: PANEL_DEFAULT_WIDTH, height: PANEL_DEFAULT_HEIGHT };
+      state.maximized = false;
+      state.preMaximizeSize = null;
+      size = setPanelSize(restoreSize.width, restoreSize.height);
+    }
+    clampPanelPosition(size);
+    updateMaximizeButton();
+    return panelSize();
+  }
+
+  function resizedPanelSize(direction, startSize, deltaX, deltaY) {
+    var width = startSize.width;
+    var height = startSize.height;
+    if (direction.indexOf("e") !== -1) width += deltaX;
+    if (direction.indexOf("w") !== -1) width -= deltaX;
+    if (direction.indexOf("s") !== -1) height += deltaY;
+    if (direction.indexOf("n") !== -1) height -= deltaY;
+    return normalizePanelSize(width, height);
+  }
+
+  function beginPanelResize(event) {
+    if (!isDesktopPanel() || (event.button !== undefined && event.button !== 0)) return;
+    var handle = event.currentTarget;
+    var direction = handle && handle.getAttribute ? handle.getAttribute("data-resize") : "";
+    if (RESIZE_DIRECTIONS.indexOf(direction) === -1) return;
+    var startSize = panelSize();
     var rect = els.panel.getBoundingClientRect();
-    if (rect.width <= 0 || rect.height <= 0) return;
-    setPanelSize(rect.width, rect.height);
+    var viewport = viewportSize();
+    state.resizeSession = {
+      pointerId: event.pointerId,
+      direction: direction,
+      startX: Number(event.clientX) || 0,
+      startY: Number(event.clientY) || 0,
+      startSize: startSize,
+      startLeft: rect.left,
+      startTop: rect.top,
+      startRight: viewport.width - rect.right,
+      startBottom: viewport.height - rect.bottom,
+      handle: handle
+    };
+    if (handle.setPointerCapture && event.pointerId !== undefined) handle.setPointerCapture(event.pointerId);
+    if (event.preventDefault) event.preventDefault();
+  }
+
+  function movePanelResize(event) {
+    var session = state.resizeSession;
+    if (!session || (event.pointerId !== undefined && session.pointerId !== undefined && event.pointerId !== session.pointerId)) return;
+    var deltaX = (Number(event.clientX) || 0) - session.startX;
+    var deltaY = (Number(event.clientY) || 0) - session.startY;
+    var size = resizedPanelSize(session.direction, session.startSize, deltaX, deltaY);
+    applyPanelSize(size);
+    var viewport = viewportSize();
+    // 拖右边/下边时固定相对的左边/上边；拖左边/上边时 right/bottom 保持不动。
+    if (session.direction.indexOf("e") !== -1) {
+      els.panel.style.right = Math.round(Math.max(0, viewport.width - session.startLeft - size.width)) + "px";
+    } else els.panel.style.right = Math.round(Math.max(0, session.startRight)) + "px";
+    if (session.direction.indexOf("s") !== -1) {
+      els.panel.style.bottom = Math.round(Math.max(0, viewport.height - session.startTop - size.height)) + "px";
+    } else els.panel.style.bottom = Math.round(Math.max(0, session.startBottom)) + "px";
+    if (event.preventDefault) event.preventDefault();
+  }
+
+  function finishPanelResize(event) {
+    var session = state.resizeSession;
+    if (!session || (event.pointerId !== undefined && session.pointerId !== undefined && event.pointerId !== session.pointerId)) return;
+    state.resizeSession = null;
+    if (session.handle.releasePointerCapture && session.pointerId !== undefined) {
+      try { session.handle.releasePointerCapture(session.pointerId); } catch (error) { /* 捕获已释放时无需处理。 */ }
+    }
+    // 放大态拖拽只改变当前显示；放大前基准保留，普通态仅在结束时写一次。
+    var size = panelSize();
+    clampPanelPosition(size);
+    if (!state.maximized) writeStorage(CHAT_CONFIG.panelSizeStorageKey, JSON.stringify(size));
   }
 
   function el(tag, className, text) {
@@ -309,9 +440,16 @@
     title.appendChild(el("strong", "", "问 DeepSeek"));
     title.appendChild(el("span", "chat-topic-hint", "C 语言问答，也可以简单聊两句"));
     header.appendChild(title);
+    var headerActions = el("div", "chat-header-actions");
+    var maximize = el("button", "chat-maximize", "↗ 放大");
+    maximize.type = "button";
+    maximize.setAttribute("aria-label", "放大 DeepSeek 对话面板");
+    maximize.setAttribute("aria-pressed", "false");
+    headerActions.appendChild(maximize);
     var close = el("button", "chat-close", "关闭");
     close.type = "button";
-    header.appendChild(close);
+    headerActions.appendChild(close);
+    header.appendChild(headerActions);
     panel.appendChild(header);
 
     // —— 没有 Key 时的引导区（含用户要求的「没有api？」按钮）——
@@ -397,6 +535,15 @@
     composer.appendChild(sendRow);
     panel.appendChild(composer);
 
+    var resizeHandles = [];
+    RESIZE_DIRECTIONS.forEach(function (direction) {
+      var handle = el("div", "chat-resize-handle chat-resize-" + direction);
+      handle.setAttribute("data-resize", direction);
+      handle.setAttribute("aria-hidden", "true");
+      panel.appendChild(handle);
+      resizeHandles.push(handle);
+    });
+
     document.body.appendChild(launcher);
     document.body.appendChild(panel);
 
@@ -404,8 +551,9 @@
       launcher: launcher, panel: panel, gate: gate, keyInput: keyInput, saveKey: saveKey, keyLink: keyLink,
       messages: messages, body: body, input: input, send: send, stop: stop, tools: tools,
       effortSelect: effortSelect, clearHistory: clearHistory, clearKey: clearKey,
-      keyState: keyState, close: close
+      keyState: keyState, close: close, header: header, maximize: maximize, resizeHandles: resizeHandles
     };
+    updateMaximizeButton();
   }
 
   // ------------------------------------------------------------------ 渲染
@@ -605,7 +753,10 @@
   function wire() {
     els.launcher.addEventListener("click", function () {
       els.panel.hidden = false;
-      applyStoredPanelSize();
+      resetPanelPosition();
+      var size = state.maximized ? applyPanelSize(maximumPanelSize()) : applyStoredPanelSize();
+      clampPanelPosition(size);
+      updateMaximizeButton();
       refreshKeyUi();
       renderHistory();
       if (readStorage(CHAT_CONFIG.storageKey)) els.input.focus();
@@ -614,6 +765,18 @@
     els.close.addEventListener("click", function () {
       if (state.controller) state.controller.abort();
       els.panel.hidden = true;
+    });
+    els.maximize.addEventListener("click", function () { togglePanelMaximize(); });
+    els.header.addEventListener("dblclick", function (event) {
+      var target = event.target;
+      if (target && ((typeof target.closest === "function" && target.closest("button")) || target.tagName === "BUTTON")) return;
+      togglePanelMaximize();
+    });
+    els.resizeHandles.forEach(function (handle) {
+      handle.addEventListener("pointerdown", beginPanelResize);
+      handle.addEventListener("pointermove", movePanelResize);
+      handle.addEventListener("pointerup", finishPanelResize);
+      handle.addEventListener("pointercancel", finishPanelResize);
     });
     els.saveKey.addEventListener("click", function () {
       var value = els.keyInput.value.trim();
@@ -647,13 +810,16 @@
       }
     });
     window.addEventListener("resize", function () {
-      var current = panelSize();
-      setPanelSize(current.width, current.height);
+      var size;
+      if (state.maximized) size = applyPanelSize(maximumPanelSize());
+      else {
+        var current = state.panelSize || { width: PANEL_DEFAULT_WIDTH, height: PANEL_DEFAULT_HEIGHT };
+        size = applyPanelSize(current);
+        if (isDesktopPanel()) writeStorage(CHAT_CONFIG.panelSizeStorageKey, JSON.stringify(size));
+      }
+      if (!els.panel.hidden) clampPanelPosition(size);
+      updateMaximizeButton();
     });
-    if (typeof ResizeObserver !== "undefined") {
-      state.panelObserver = new ResizeObserver(function () { rememberRenderedPanelSize(); });
-      state.panelObserver.observe(els.panel);
-    }
   }
 
   // ------------------------------------------------------------- 测试与调试钩子
@@ -677,6 +843,9 @@
     panelSize: panelSize,
     setPanelSize: setPanelSize,
     applyStoredPanelSize: applyStoredPanelSize,
+    maximumPanelSize: maximumPanelSize,
+    resizedPanelSize: resizedPanelSize,
+    togglePanelMaximize: togglePanelMaximize,
     storage: { read: readStorage, write: writeStorage },
     open: function () { els.launcher.click(); },
     elements: function () { return els; }

@@ -4,7 +4,7 @@
 
 ## 怎么用
 
-下载 `dist/c语言自学本地网站v1.30.html`，双击即可打开；电脑和手机都能使用，无需安装、无需联网。只有“问 DeepSeek”需要联网并由你填写 API Key，Key 只保存在浏览器本地。
+下载 `dist/c语言自学本地网站v1.41.html`，双击即可打开；电脑和手机都能使用，无需安装、无需联网。只有“问 DeepSeek”需要联网并由你填写 API Key，Key 只保存在浏览器本地。
 
 ## 功能一览
 
@@ -37,4 +37,4 @@ node tools/verify-exercises.mjs
 
 内容以 C11 为准；示例均按 `gcc -std=c11 -Wall -Wextra` 做零告警检查。AI 功能需要用户自备 DeepSeek API Key，Key 只存本地、不会上传。本项目仅供学习使用。
 
-当前版本：v1.30。
+当前版本：v1.41。

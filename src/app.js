@@ -378,6 +378,55 @@
     } catch (error) { /* 存储受限时仍保留当前页面内的 Map 草稿。 */ }
   }
 
+  // 练习代码框的缩进：Tab 插 4 个空格（选中多行则整块缩进），Shift+Tab 反缩进；
+  // 按过 Esc 之后再按 Tab 会放行，让焦点正常移出输入框（键盘无障碍惯例）。
+  var CODE_INDENT = "    ";
+
+  function lineStartOf(text, index) { return text.lastIndexOf("\n", index - 1) + 1; }
+  function lineEndOf(text, index) { var end = text.indexOf("\n", index); return end === -1 ? text.length : end; }
+
+  function enableCodeIndent(textarea) {
+    var escapeArmed = false;
+    textarea.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") { escapeArmed = true; return; }
+      if (event.key !== "Tab") { escapeArmed = false; return; }
+      if (escapeArmed) { escapeArmed = false; return; }
+
+      var text = textarea.value;
+      var start = textarea.selectionStart;
+      var end = textarea.selectionEnd;
+      var multiLine = text.slice(start, end).indexOf("\n") !== -1;
+      event.preventDefault();
+
+      if (!event.shiftKey && !multiLine) {
+        textarea.value = text.slice(0, start) + CODE_INDENT + text.slice(end);
+        var caret = start + CODE_INDENT.length;
+        textarea.setSelectionRange(caret, caret);
+      } else {
+        var blockStart = lineStartOf(text, start);
+        var blockEnd = lineEndOf(text, end);
+        var lines = text.slice(blockStart, blockEnd).split("\n");
+        if (!event.shiftKey) {
+          var indented = lines.map(function (line) { return CODE_INDENT + line; }).join("\n");
+          textarea.value = text.slice(0, blockStart) + indented + text.slice(blockEnd);
+          textarea.setSelectionRange(start + CODE_INDENT.length, end + CODE_INDENT.length * lines.length);
+        } else {
+          var removedTotal = 0;
+          var removedFirst = 0;
+          var outdented = lines.map(function (line, index) {
+            var cut = (line.match(/^ {1,4}/) || [""])[0].length;
+            removedTotal += cut;
+            if (index === 0) removedFirst = cut;
+            return line.slice(cut);
+          }).join("\n");
+          textarea.value = text.slice(0, blockStart) + outdented + text.slice(blockEnd);
+          textarea.setSelectionRange(Math.max(blockStart, start - removedFirst), Math.max(blockStart, end - removedTotal));
+        }
+      }
+      textarea.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+  }
+
   function populateCategories() {
     [ALL_CATEGORY].concat(CATEGORIES).forEach(function (category) {
       var option = document.createElement("option");
@@ -545,7 +594,7 @@
         shape = svgElement("rect", "roadmap-node-shape");
         shape.setAttribute("width", item.width);
         shape.setAttribute("height", item.height);
-        shape.setAttribute("rx", index === 0 || index === nodes.length - 1 ? item.height / 2 : 14);
+        shape.setAttribute("rx", index === 0 || index === nodes.length - 1 ? item.height / 2 : Math.min(22, item.height / 2));
       }
       group.appendChild(shape);
       if (index === nodes.length - 1 && !decision) {
@@ -983,6 +1032,7 @@
         reviewLabel.htmlFor = exercise.id + "-review-code";
         reviewInput.id = exercise.id + "-review-code";
         reviewInput.value = exerciseDrafts.get(exercise.id) || "";
+        enableCodeIndent(reviewInput);
         reviewInput.addEventListener("input", function () {
           saveExerciseDraft(exercise.id, reviewInput.value);
         });

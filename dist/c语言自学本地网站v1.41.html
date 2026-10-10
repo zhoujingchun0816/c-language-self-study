@@ -14,27 +14,28 @@
   <title>C 语言语法速查</title>
   <style data-source="styles.css">
 :root {
-  --color-scheme: dark;
-  --bg: #5A8CD7;
-  --surface: #315995;
-  --surface-2: #294f88;
-  --page-text: #08162e;
-  --text: #ffffff;
-  --muted: #dce8fa;
-  --border: #9cbdeb;
-  --accent: #ffe08a;
-  --accent-strong: #fff0b8;
-  --accent-soft: #264879;
-  --on-accent: #08162e;
-  --danger: #ffd0d9;
-  --difficulty-1: #9aebc4;
-  --difficulty-2: #ffe0a3;
-  --difficulty-3: #ffd0d9;
-  --code-bg: #0b1d3a;
-  --code-text: #f7faff;
-  --mark: #ffe08a;
-  --mark-text: #08162e;
-  --shadow: 0 14px 38px rgba(8, 22, 46, 0.34);
+  --color-scheme: light;
+  --bg: #5a8cd7;
+  --surface: #f3ebd9;
+  --surface-2: #e9e1ce;
+  --page-text: #16233a;
+  --text: #2b415a;
+  --muted: #5e6459;
+  --border: #c9ba9b;
+  --accent: #355069;
+  --accent-strong: #2b415a;
+  --accent-soft: #eadfc6;
+  --on-accent: #f7f2e7;
+  --danger: #b33a50;
+  --difficulty-1: #4c6316;
+  --difficulty-2: #8a4d00;
+  --difficulty-3: #b33a50;
+  --code-bg: #2c4359;
+  --code-text: #f6f1e4;
+  --mark: #efd9a6;
+  --mark-text: #2b415a;
+  --shadow: 0 14px 38px rgba(20, 36, 58, 0.28);
+  /* 蓝底 + 米白纸卡：蓝底取头像背景，纸色取纸袋米白，墨蓝取发色，暖沙做点缀 2026-10-10 */
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
@@ -63,27 +64,27 @@
 }
 
 :root[data-theme="blue"] {
-  --color-scheme: dark;
-  --bg: #5A8CD7;
-  --surface: #315995;
-  --surface-2: #294f88;
-  --page-text: #08162e;
-  --text: #ffffff;
-  --muted: #dce8fa;
-  --border: #9cbdeb;
-  --accent: #ffe08a;
-  --accent-strong: #fff0b8;
-  --accent-soft: #264879;
-  --on-accent: #08162e;
-  --danger: #ffd0d9;
-  --difficulty-1: #9aebc4;
-  --difficulty-2: #ffe0a3;
-  --difficulty-3: #ffd0d9;
-  --code-bg: #0b1d3a;
-  --code-text: #f7faff;
-  --mark: #ffe08a;
-  --mark-text: #08162e;
-  --shadow: 0 14px 38px rgba(8, 22, 46, 0.34);
+  --color-scheme: light;
+  --bg: #5a8cd7;
+  --surface: #f3ebd9;
+  --surface-2: #e9e1ce;
+  --page-text: #16233a;
+  --text: #2b415a;
+  --muted: #5e6459;
+  --border: #c9ba9b;
+  --accent: #355069;
+  --accent-strong: #2b415a;
+  --accent-soft: #eadfc6;
+  --on-accent: #f7f2e7;
+  --danger: #b33a50;
+  --difficulty-1: #4c6316;
+  --difficulty-2: #8a4d00;
+  --difficulty-3: #b33a50;
+  --code-bg: #2c4359;
+  --code-text: #f6f1e4;
+  --mark: #efd9a6;
+  --mark-text: #2b415a;
+  --shadow: 0 14px 38px rgba(20, 36, 58, 0.28);
 }
 
 :root[data-theme="dark"] {
@@ -116,6 +117,37 @@
 [hidden] { display: none !important; }
 
 html { min-width: 0; color-scheme: var(--color-scheme); }
+
+/* 滚动条：改成和配色一致的圆润样式（原来用系统深色滚动条，在米白面板上是一条黑杠，很跳）
+   取色来自参考图实测：米白纸卡 = 轨道，裤子的暖灰 #66665a = 滑块，鱼身的黄绿 #d5d98d/#9dc03c = 悬停点缀
+   放在 html 上而不是主题块里，这样四个主题共用同一套滚动条，主题块仍只保留 21 个调色板变量 */
+html {
+  --fish: #9dc03c;
+  --pants: #6a6a5b;
+  --scroll-track: color-mix(in srgb, var(--surface-2) 82%, transparent);
+  --scroll-thumb: var(--pants);
+  --scroll-thumb-hover: color-mix(in srgb, var(--fish) 70%, var(--pants));
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+*::-webkit-scrollbar { width: 12px; height: 12px; }
+*::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: var(--scroll-thumb);
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover { background: var(--scroll-thumb-hover); background-clip: padding-box; }
+*::-webkit-scrollbar-corner { background: transparent; }
+*::-webkit-scrollbar-button { display: none; height: 0; width: 0; }
 
 body {
   min-width: 0;
@@ -164,7 +196,7 @@ h1 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.3rem); letter-spacing: -0.04em;
   min-height: 40px;
   padding: 8px 12px;
   border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
-  border-radius: 10px;
+  border-radius: 16px;
   background: var(--accent-soft);
   color: var(--accent-strong);
   font-size: 0.86rem;
@@ -181,7 +213,7 @@ h1 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.3rem); letter-spacing: -0.04em;
   width: 210px;
   padding: 3px;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 18px;
   background: var(--accent-soft);
   isolation: isolate;
 }
@@ -194,7 +226,7 @@ h1 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.3rem); letter-spacing: -0.04em;
   left: 3px;
   width: calc((100% - 6px) / 3);
   border: 1px solid var(--border);
-  border-radius: 9px;
+  border-radius: 14px;
   background: var(--surface);
   transform: translateX(calc(var(--theme-index, 1) * 100%));
   transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -207,7 +239,7 @@ h1 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.3rem); letter-spacing: -0.04em;
   min-height: 40px;
   padding: 6px 8px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 12px;
   background: transparent;
   color: var(--muted);
   font-size: 0.82rem;
@@ -229,7 +261,7 @@ h1 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.3rem); letter-spacing: -0.04em;
   min-height: 50px;
   padding: 10px 48px 10px 43px;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 20px;
   outline: none;
   background: var(--surface);
   color: var(--text);
@@ -253,7 +285,7 @@ kbd { border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 
 .sidebar, .detail-panel {
   min-width: 0;
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: 26px;
   background: var(--surface);
   color: var(--text);
   box-shadow: var(--shadow);
@@ -269,18 +301,18 @@ kbd { border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 
   flex: 1;
   padding: 8px 10px;
   border: 1px solid var(--border);
-  border-radius: 9px;
+  border-radius: 14px;
   background: var(--surface);
   color: var(--text);
 }
 
-.stage-directory { margin-top: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); }
+.stage-directory { margin-top: 12px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface-2); }
 .stage-directory summary { padding: 8px 10px; color: var(--accent-strong); font-size: 0.82rem; font-weight: 750; cursor: pointer; }
 .stage-directory-list { display: grid; gap: 4px; max-height: 210px; padding: 0 7px 8px; overflow-y: auto; }
-.stage-directory-button { padding: 6px 8px; border: 0; border-radius: 7px; background: transparent; color: var(--text); text-align: left; font-size: 0.76rem; }
+.stage-directory-button { padding: 6px 8px; border: 0; border-radius: 10px; background: transparent; color: var(--text); text-align: left; font-size: 0.76rem; }
 .stage-directory-button:hover, .stage-directory-button:focus-visible { background: var(--accent-soft); color: var(--accent-strong); }
 
-.practice-sites { min-width: 0; margin-top: 12px; padding: 9px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); }
+.practice-sites { min-width: 0; margin-top: 12px; padding: 9px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface-2); }
 .practice-sites h2 { margin: 0 0 7px; color: var(--accent-strong); font-size: 0.82rem; }
 .practice-site-links { display: flex; min-width: 0; flex-wrap: wrap; gap: 7px; }
 .practice-site-links a {
@@ -292,7 +324,7 @@ kbd { border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 
   justify-content: center;
   padding: 7px 9px;
   border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border));
-  border-radius: 8px;
+  border-radius: 12px;
   background: var(--surface);
   color: var(--accent-strong);
   font-size: 0.78rem;
@@ -309,7 +341,7 @@ kbd { border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 
   width: 100%;
   padding: 11px 12px;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: 16px;
   text-align: left;
   background: transparent;
   color: var(--text);
@@ -343,16 +375,16 @@ kbd { border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 
 }
 .welcome-card { max-width: 520px; margin: 80px auto 0; text-align: center; color: var(--muted); }
 .welcome-card h2 { color: var(--text); }
-.welcome-symbol { display: grid; place-items: center; width: 72px; height: 72px; margin: 0 auto; border-radius: 20px; background: var(--accent); color: var(--on-accent); font: 800 2.3rem/1 ui-monospace, monospace; transform: rotate(-3deg); }
+.welcome-symbol { display: grid; place-items: center; width: 72px; height: 72px; margin: 0 auto; border-radius: 28px; background: var(--accent); color: var(--on-accent); font: 800 2.3rem/1 ui-monospace, monospace; transform: rotate(-3deg); }
 .key-hint { margin-top: 24px; }
 
 .detail-heading { margin-bottom: 26px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
 .detail-heading h2 { margin: 7px 0 8px; font-size: clamp(1.65rem, 4vw, 2.5rem); letter-spacing: -0.035em; }
 .category-badge { display: inline-block; padding: 4px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-strong); font-size: 0.78rem; font-weight: 750; }
 .learning-order-badge { display: inline-block; margin-right: 7px; padding: 4px 9px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border)); border-radius: 999px; color: var(--accent-strong); font-size: 0.78rem; font-weight: 750; }
-.include-callout { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 12px 0; padding: 10px 12px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border)); border-radius: 10px; background: var(--accent-soft); color: var(--accent-strong); }
+.include-callout { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 12px 0; padding: 10px 12px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border)); border-radius: 16px; background: var(--accent-soft); color: var(--accent-strong); }
 .include-label { white-space: pre-line; font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace; font-size: 0.86rem; font-weight: 700; line-height: 1.55; }
-.include-copy { flex: none; padding: 5px 9px; border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border)); border-radius: 7px; background: var(--surface); color: var(--accent-strong); font-size: 0.76rem; }
+.include-copy { flex: none; padding: 5px 9px; border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border)); border-radius: 10px; background: var(--surface); color: var(--accent-strong); font-size: 0.76rem; }
 .include-copy:disabled { cursor: default; opacity: 0.55; }
 .detail-aliases { margin: -2px 0 8px; color: var(--muted); font-size: 0.82rem; overflow-wrap: anywhere; }
 .summary { margin: 0; color: var(--muted); font-size: 1.04rem; line-height: 1.75; }
@@ -361,14 +393,14 @@ kbd { border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 
 .detail-section h3 { margin: 0 0 10px; font-size: 0.9rem; letter-spacing: 0.05em; text-transform: uppercase; }
 
 .code-wrap { position: relative; min-width: 0; }
-pre { margin: 0; padding: 20px; overflow-x: auto; border-radius: 12px; background: var(--code-bg); color: var(--code-text); line-height: 1.6; tab-size: 4; }
+pre { margin: 0; padding: 20px; overflow-x: auto; border-radius: 18px; background: var(--code-bg); color: var(--code-text); line-height: 1.6; tab-size: 4; }
 code { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace; font-size: 0.88rem; }
-.copy-button { position: absolute; top: 9px; right: 9px; padding: 5px 9px; border: 1px solid rgba(255,255,255,0.18); border-radius: 7px; background: rgba(255,255,255,0.1); color: var(--code-text); font-size: 0.76rem; }
+.copy-button { position: absolute; top: 9px; right: 9px; padding: 5px 9px; border: 1px solid rgba(255,255,255,0.18); border-radius: 10px; background: rgba(255,255,255,0.1); color: var(--code-text); font-size: 0.76rem; }
 .copy-button:hover { background: rgba(255,255,255,0.18); }
 
 .notes-list { margin: 0; padding-left: 1.35em; line-height: 1.75; }
 .related-list { display: flex; flex-wrap: wrap; gap: 8px; }
-.related-button, .empty-state button { padding: 7px 11px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--accent-strong); }
+.related-button, .empty-state button { padding: 7px 11px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2); color: var(--accent-strong); }
 .related-button:hover, .empty-state button:hover { border-color: var(--accent); }
 .entry-links { display: flex; flex-wrap: wrap; gap: 8px; }
 .entry-link, .roadmap-action-link {
@@ -378,7 +410,7 @@ code { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace; font
   min-height: 40px;
   padding: 8px 12px;
   border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
-  border-radius: 8px;
+  border-radius: 12px;
   background: var(--accent-soft);
   color: var(--accent-strong);
   font: inherit;
@@ -391,7 +423,7 @@ code { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace; font
 .roadmap-action-link:hover, .roadmap-action-link:focus-visible { border-color: var(--accent); }
 
 /* ---------------- C 语言学习流程图 ---------------- */
-.learning-roadmap { margin: 0 0 26px; padding: 16px; border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border)); border-radius: 15px; background: color-mix(in srgb, var(--accent-soft) 42%, var(--surface)); }
+.learning-roadmap { margin: 0 0 26px; padding: 16px; border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border)); border-radius: 22px; background: color-mix(in srgb, var(--accent-soft) 42%, var(--surface)); }
 .learning-roadmap.is-collapsible { padding: 0; overflow: hidden; }
 .roadmap-heading { display: flex; flex-direction: column; gap: 4px; margin: 0 0 12px; }
 .roadmap-heading h3, .roadmap-heading p { margin: 0; }
@@ -425,7 +457,7 @@ summary.roadmap-heading { margin: 0; padding: 13px 16px; cursor: pointer; }
 .roadmap-fallback-detail { display: block; color: var(--muted); font-size: 0.78rem; }
 
 .exercise-section { padding-top: 4px; border-top: 1px solid var(--border); }
-.exercise-card { margin-top: 14px; padding: 18px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-2); }
+.exercise-card { margin-top: 14px; padding: 18px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface-2); }
 .exercise-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; }
 .exercise-title { margin: 0; font-size: 1.04rem; }
 .exercise-difficulty { padding: 3px 8px; border-radius: 999px; font-size: 0.74rem; font-weight: 700; }
@@ -439,24 +471,24 @@ summary.roadmap-heading { margin: 0; padding: 13px 16px; cursor: pointer; }
 .exercise-prompt, .exercise-explanation { margin: 0; line-height: 1.75; }
 .exercise-list { margin: 0; padding-left: 1.4rem; line-height: 1.75; }
 .exercise-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
-.exercise-toggle, .exercise-review-button, .exercise-generate-button, .exercise-generate-action { min-height: 40px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--accent-strong); font-weight: 650; }
+.exercise-toggle, .exercise-review-button, .exercise-generate-button, .exercise-generate-action { min-height: 40px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--accent-strong); font-weight: 650; }
 .exercise-toggle:hover, .exercise-review-button:hover, .exercise-generate-button:hover, .exercise-generate-action:hover { border-color: var(--accent); }
 .exercise-toggle[aria-expanded="true"] { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
-.exercise-disclosure { margin-top: 10px; padding: 12px; border-left: 3px solid var(--accent); border-radius: 8px; background: var(--surface); }
+.exercise-disclosure { margin-top: 10px; padding: 12px; border-left: 3px solid var(--accent); border-radius: 12px; background: var(--surface); }
 .exercise-answer { padding: 0; border-left: 0; background: transparent; }
-.exercise-output { margin-top: 15px; padding: 11px 12px; border: 1px dashed var(--border); border-radius: 9px; background: var(--surface); }
+.exercise-output { margin-top: 15px; padding: 11px 12px; border: 1px dashed var(--border); border-radius: 14px; background: var(--surface); }
 .exercise-output pre { margin: 7px 0 0; padding: 0; background: transparent; color: var(--text); white-space: pre-wrap; }
 .exercise-review { display: grid; gap: 9px; margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--border); }
 .exercise-review .exercise-subtitle { margin: 0; }
-.exercise-code-input { width: 100%; min-height: 150px; padding: 10px 11px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); color: var(--text); font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; line-height: 1.55; resize: vertical; }
+.exercise-code-input { width: 100%; min-height: 150px; padding: 10px 11px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--text); font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; line-height: 1.55; resize: vertical; }
 .exercise-review-button, .exercise-generate-button { justify-self: start; background: var(--accent); color: var(--on-accent); border-color: transparent; }
 .exercise-generate { display: grid; gap: 10px; margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--border); }
 .exercise-generate .exercise-subtitle { margin: 0; }
 .exercise-generate-controls { display: grid; grid-template-columns: auto minmax(160px, 1fr) auto; align-items: center; gap: 9px; }
 .exercise-generate-count { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.84rem; white-space: nowrap; }
-.exercise-generate-count select, .exercise-generate-note { min-height: 40px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); }
+.exercise-generate-count select, .exercise-generate-note { min-height: 40px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); }
 .exercise-generate-note { width: 100%; min-width: 0; }
-.exercise-generate-output { padding: 12px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border)); border-radius: 9px; background: var(--surface); }
+.exercise-generate-output { padding: 12px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border)); border-radius: 14px; background: var(--surface); }
 .exercise-generate-status, .exercise-generate-error { margin: 0; line-height: 1.6; }
 .exercise-generate-error { color: var(--danger); }
 .exercise-generate-text { max-height: 420px; margin: 0; padding: 0; overflow: auto; background: transparent; color: var(--text); font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -543,56 +575,73 @@ mark { border-radius: 3px; padding: 0 1px; background: var(--mark); color: var(-
   max-width: min(96vw, 900px);
   max-height: 92vh;
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 24px;
   background: var(--surface);
   color: var(--text);
   box-shadow: var(--shadow);
-  resize: both;
+  resize: none;
   overflow: hidden;
 }
 .chat-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border); }
 .chat-title { display: flex; flex-direction: column; }
 .chat-title strong { font-size: 1rem; }
 .chat-topic-hint { color: var(--muted); font-size: 0.74rem; }
-.chat-close, .chat-tool-button {
+.chat-header-actions { display: flex; align-items: center; gap: 7px; }
+.chat-close, .chat-maximize, .chat-tool-button {
   padding: 5px 10px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 12px;
   background: var(--surface-2);
   color: var(--text);
   font-size: 0.78rem;
 }
-.chat-close:hover, .chat-tool-button:hover { border-color: var(--accent); }
+.chat-close:hover, .chat-maximize:hover, .chat-tool-button:hover { border-color: var(--accent); }
+
+.chat-resize-handle { display: none; position: absolute; z-index: 3; touch-action: none; }
+@media (min-width: 761px) {
+  .chat-resize-handle { display: block; }
+  .chat-resize-n, .chat-resize-s { right: 14px; left: 14px; height: 6px; cursor: ns-resize; }
+  .chat-resize-e, .chat-resize-w { top: 14px; bottom: 14px; width: 6px; cursor: ew-resize; }
+  .chat-resize-n { top: 0; }
+  .chat-resize-s { bottom: 0; }
+  .chat-resize-e { right: 0; }
+  .chat-resize-w { left: 0; }
+  .chat-resize-ne, .chat-resize-nw, .chat-resize-se, .chat-resize-sw { width: 14px; height: 14px; }
+  .chat-resize-ne { top: 0; right: 0; cursor: nesw-resize; }
+  .chat-resize-nw { top: 0; left: 0; cursor: nwse-resize; }
+  .chat-resize-se { right: 0; bottom: 0; cursor: nwse-resize; }
+  .chat-resize-sw { bottom: 0; left: 0; cursor: nesw-resize; }
+}
 
 .chat-gate { padding: 14px; border-bottom: 1px solid var(--border); background: var(--surface-2); }
 .chat-gate-title { margin: 0 0 10px; font-size: 0.86rem; }
-.chat-key-input { width: 100%; padding: 9px 10px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); color: var(--text); }
+.chat-key-input { width: 100%; padding: 9px 10px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--text); }
 .chat-gate-row { display: flex; gap: 8px; margin: 10px 0 12px; }
-.chat-primary { padding: 9px 14px; border: 0; border-radius: 9px; background: var(--accent); color: var(--on-accent); font-weight: 700; }
+.chat-primary { padding: 9px 14px; border: 0; border-radius: 14px; background: var(--accent); color: var(--on-accent); font-weight: 700; }
 .chat-primary:disabled { opacity: 0.5; }
 .chat-nokey-hint { margin: 0 0 4px; color: var(--muted); font-size: 0.8rem; }
-.chat-getkey { display: inline-block; padding: 6px 10px; border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border)); border-radius: 8px; background: var(--accent-soft); color: var(--accent-strong); font-size: 0.8rem; text-decoration: none; }
+.chat-getkey { display: inline-block; padding: 6px 10px; border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border)); border-radius: 12px; background: var(--accent-soft); color: var(--accent-strong); font-size: 0.8rem; text-decoration: none; }
 .chat-getkey:hover { border-color: var(--accent); }
 .chat-privacy { margin: 10px 0 0; color: var(--muted); font-size: 0.72rem; line-height: 1.5; }
-.chat-billing { margin: 8px 0 6px; padding: 7px 9px; border: 1px dashed color-mix(in srgb, var(--accent) 35%, var(--border)); border-radius: 8px; color: var(--muted); font-size: 0.72rem; line-height: 1.55; }
+.chat-billing { margin: 8px 0 6px; padding: 7px 9px; border: 1px dashed color-mix(in srgb, var(--accent) 35%, var(--border)); border-radius: 12px; color: var(--muted); font-size: 0.72rem; line-height: 1.55; }
 .chat-pricing-link { display: inline-block; color: var(--accent-strong); font-size: 0.74rem; text-decoration: underline; }
 
 .chat-body { flex: 1; min-height: 140px; overflow-y: auto; padding: 12px 14px; }
 .chat-messages { display: grid; gap: 9px; }
 .chat-bubble { display: flex; }
 .chat-user { justify-content: flex-end; }
-.chat-bubble-text { max-width: 88%; padding: 9px 12px; border-radius: 12px; background: var(--surface-2); font-size: 0.86rem; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
+.chat-bubble-text { max-width: 88%; padding: 9px 12px; border-radius: 18px; background: var(--surface-2); font-size: 0.86rem; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
 .chat-user .chat-bubble-text { background: var(--accent); color: var(--on-accent); }
 .chat-system .chat-bubble-text { background: transparent; color: var(--muted); font-size: 0.8rem; border: 1px dashed var(--border); }
 
 .chat-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--border); }
 .chat-tools-label { color: var(--muted); font-size: 0.76rem; }
-.chat-select { padding: 5px 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 0.78rem; }
-.chat-model-badge { padding: 5px 9px; border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border)); border-radius: 8px; background: var(--accent-soft); color: var(--accent-strong); font-size: 0.78rem; }
+.chat-select { padding: 5px 8px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); font-size: 0.78rem; }
+.chat-model-badge { padding: 5px 9px; border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border)); border-radius: 12px; background: var(--accent-soft); color: var(--accent-strong); font-size: 0.78rem; }
 .chat-key-state { margin-left: auto; color: var(--muted); font-size: 0.74rem; }
 
 .chat-composer { padding: 10px 14px 14px; border-top: 1px solid var(--border); }
-.chat-input { width: 100%; padding: 9px 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font: inherit; resize: vertical; }
+.chat-input { width: 100%; padding: 9px 10px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); color: var(--text); font: inherit; resize: vertical; }
 .chat-send-row { display: flex; gap: 8px; margin-top: 8px; }
 
 @media (max-width: 760px) {
@@ -604,10 +653,12 @@ mark { border-radius: 3px; padding: 0 1px; background: var(--mark); color: var(-
     min-width: 0;
     min-height: min(320px, 92vh);
     max-width: 100vw;
-    max-height: 92vh;
-    border-radius: 16px 16px 0 0;
-    resize: vertical;
+    max-height: 88vh;
+    border-radius: 24px 16px 0 0;
+    resize: none;
   }
+  .chat-resize-handle { display: none; }
+  .chat-maximize { display: none; }
   .chat-launcher { right: 12px; bottom: 12px; }
   .keyword-tag, .chat-close, .chat-tool-button, .chat-primary, .chat-getkey, .chat-select { min-height: 40px; }
   .chat-key-input, .chat-input { min-height: 44px; }
@@ -6105,6 +6156,55 @@ window.C_SYNTAX_ADD_EXERCISES([
     } catch (error) { /* 存储受限时仍保留当前页面内的 Map 草稿。 */ }
   }
 
+  // 练习代码框的缩进：Tab 插 4 个空格（选中多行则整块缩进），Shift+Tab 反缩进；
+  // 按过 Esc 之后再按 Tab 会放行，让焦点正常移出输入框（键盘无障碍惯例）。
+  var CODE_INDENT = "    ";
+
+  function lineStartOf(text, index) { return text.lastIndexOf("\n", index - 1) + 1; }
+  function lineEndOf(text, index) { var end = text.indexOf("\n", index); return end === -1 ? text.length : end; }
+
+  function enableCodeIndent(textarea) {
+    var escapeArmed = false;
+    textarea.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") { escapeArmed = true; return; }
+      if (event.key !== "Tab") { escapeArmed = false; return; }
+      if (escapeArmed) { escapeArmed = false; return; }
+
+      var text = textarea.value;
+      var start = textarea.selectionStart;
+      var end = textarea.selectionEnd;
+      var multiLine = text.slice(start, end).indexOf("\n") !== -1;
+      event.preventDefault();
+
+      if (!event.shiftKey && !multiLine) {
+        textarea.value = text.slice(0, start) + CODE_INDENT + text.slice(end);
+        var caret = start + CODE_INDENT.length;
+        textarea.setSelectionRange(caret, caret);
+      } else {
+        var blockStart = lineStartOf(text, start);
+        var blockEnd = lineEndOf(text, end);
+        var lines = text.slice(blockStart, blockEnd).split("\n");
+        if (!event.shiftKey) {
+          var indented = lines.map(function (line) { return CODE_INDENT + line; }).join("\n");
+          textarea.value = text.slice(0, blockStart) + indented + text.slice(blockEnd);
+          textarea.setSelectionRange(start + CODE_INDENT.length, end + CODE_INDENT.length * lines.length);
+        } else {
+          var removedTotal = 0;
+          var removedFirst = 0;
+          var outdented = lines.map(function (line, index) {
+            var cut = (line.match(/^ {1,4}/) || [""])[0].length;
+            removedTotal += cut;
+            if (index === 0) removedFirst = cut;
+            return line.slice(cut);
+          }).join("\n");
+          textarea.value = text.slice(0, blockStart) + outdented + text.slice(blockEnd);
+          textarea.setSelectionRange(Math.max(blockStart, start - removedFirst), Math.max(blockStart, end - removedTotal));
+        }
+      }
+      textarea.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+  }
+
   function populateCategories() {
     [ALL_CATEGORY].concat(CATEGORIES).forEach(function (category) {
       var option = document.createElement("option");
@@ -6272,7 +6372,7 @@ window.C_SYNTAX_ADD_EXERCISES([
         shape = svgElement("rect", "roadmap-node-shape");
         shape.setAttribute("width", item.width);
         shape.setAttribute("height", item.height);
-        shape.setAttribute("rx", index === 0 || index === nodes.length - 1 ? item.height / 2 : 14);
+        shape.setAttribute("rx", index === 0 || index === nodes.length - 1 ? item.height / 2 : Math.min(22, item.height / 2));
       }
       group.appendChild(shape);
       if (index === nodes.length - 1 && !decision) {
@@ -6710,6 +6810,7 @@ window.C_SYNTAX_ADD_EXERCISES([
         reviewLabel.htmlFor = exercise.id + "-review-code";
         reviewInput.id = exercise.id + "-review-code";
         reviewInput.value = exerciseDrafts.get(exercise.id) || "";
+        enableCodeIndent(reviewInput);
         reviewInput.addEventListener("input", function () {
           saveExerciseDraft(exercise.id, reviewInput.value);
         });
@@ -7210,7 +7311,10 @@ window.C_SYNTAX_ADD_EXERCISES([
 
   // ------------------------------------------------------------------ DOM
   var els = {};
-  var state = { history: [], busy: false, controller: null, keyDraft: "", panelSize: null, panelObserver: null };
+  var state = {
+    history: [], busy: false, controller: null, keyDraft: "", panelSize: null,
+    maximized: false, preMaximizeSize: null, resizeSession: null
+  };
   var PANEL_DEFAULT_WIDTH = 420;
   var PANEL_DEFAULT_HEIGHT = 620;
   var PANEL_MIN_WIDTH = 320;
@@ -7219,6 +7323,9 @@ window.C_SYNTAX_ADD_EXERCISES([
   var PANEL_VIEWPORT_WIDTH_RATIO = 0.96;
   var PANEL_VIEWPORT_HEIGHT_RATIO = 0.92;
   var PANEL_NARROW_BREAKPOINT = 760;
+  var PANEL_DEFAULT_RIGHT = 20;
+  var PANEL_DEFAULT_BOTTOM = 78;
+  var RESIZE_DIRECTIONS = ["n", "s", "e", "w", "ne", "nw", "se", "sw"];
 
   function viewportSize() {
     return {
@@ -7239,9 +7346,47 @@ window.C_SYNTAX_ADD_EXERCISES([
     if (!Number.isFinite(numericWidth)) numericWidth = PANEL_DEFAULT_WIDTH;
     if (!Number.isFinite(numericHeight)) numericHeight = PANEL_DEFAULT_HEIGHT;
     return {
-      width: Math.round(narrow ? viewport.width : Math.min(maxWidth, Math.max(minWidth, numericWidth))),
+      // 窄屏由 CSS 强制整宽；内存里保留桌面宽度，避免手机打开一次就覆盖桌面偏好。
+      width: Math.round(narrow ? Math.min(PANEL_MAX_WIDTH, Math.max(PANEL_MIN_WIDTH, numericWidth)) :
+        Math.min(maxWidth, Math.max(minWidth, numericWidth))),
       height: Math.round(Math.min(maxHeight, Math.max(minHeight, numericHeight)))
     };
+  }
+
+  function maximumPanelSize() {
+    var viewport = viewportSize();
+    return normalizePanelSize(Math.min(PANEL_MAX_WIDTH, viewport.width * PANEL_VIEWPORT_WIDTH_RATIO),
+      viewport.height * PANEL_VIEWPORT_HEIGHT_RATIO);
+  }
+
+  function isDesktopPanel() {
+    return viewportSize().width > PANEL_NARROW_BREAKPOINT;
+  }
+
+  function clampPanelPosition(size) {
+    if (!els.panel || !els.panel.style || !isDesktopPanel()) return;
+    var viewport = viewportSize();
+    var rect = typeof els.panel.getBoundingClientRect === "function" ? els.panel.getBoundingClientRect() : null;
+    var trustworthyRect = !els.panel.hidden && rect && Number.isFinite(rect.width) && rect.width >= 1 &&
+      Number.isFinite(rect.height) && rect.height >= 1 && Number.isFinite(rect.right) && Number.isFinite(rect.bottom);
+    // hidden/display:none 会得到全 0 矩形；此时绝不能用“视口 - 0”反推位置。
+    // 保留现有内联值（没有内联值时继续由样式表的 20px / 78px 生效），等面板可见后再夹紧。
+    if (!trustworthyRect) return;
+    var right = viewport.width - rect.right;
+    var bottom = viewport.height - rect.bottom;
+    if (!Number.isFinite(right)) right = parseFloat(els.panel.style.right);
+    if (!Number.isFinite(bottom)) bottom = parseFloat(els.panel.style.bottom);
+    if (!Number.isFinite(right)) right = PANEL_DEFAULT_RIGHT;
+    if (!Number.isFinite(bottom)) bottom = PANEL_DEFAULT_BOTTOM;
+    els.panel.style.right = Math.round(Math.min(Math.max(0, viewport.width - rect.width), Math.max(0, right))) + "px";
+    els.panel.style.bottom = Math.round(Math.min(Math.max(0, viewport.height - rect.height), Math.max(0, bottom))) + "px";
+  }
+
+  function resetPanelPosition() {
+    if (!els.panel || !els.panel.style) return;
+    // 每次打开都回到样式表定义的右下角；空字符串会恢复 CSS 的 20px / 78px。
+    els.panel.style.right = "";
+    els.panel.style.bottom = "";
   }
 
   function applyPanelSize(size) {
@@ -7267,7 +7412,10 @@ window.C_SYNTAX_ADD_EXERCISES([
 
   function setPanelSize(width, height) {
     var size = applyPanelSize({ width: width, height: height });
-    writeStorage(CHAT_CONFIG.panelSizeStorageKey, JSON.stringify(size));
+    clampPanelPosition(size);
+    if (!state.maximized && isDesktopPanel()) {
+      writeStorage(CHAT_CONFIG.panelSizeStorageKey, JSON.stringify(size));
+    }
     return size;
   }
 
@@ -7282,18 +7430,102 @@ window.C_SYNTAX_ADD_EXERCISES([
       } catch (error) { /* 非法尺寸按默认值恢复。 */ }
     }
     var size = applyPanelSize(stored || { width: PANEL_DEFAULT_WIDTH, height: PANEL_DEFAULT_HEIGHT });
-    if (raw) {
+    if (raw && isDesktopPanel()) {
       if (stored) writeStorage(CHAT_CONFIG.panelSizeStorageKey, JSON.stringify(size));
       else writeStorage(CHAT_CONFIG.panelSizeStorageKey, null);
     }
     return size;
   }
 
-  function rememberRenderedPanelSize() {
-    if (!els.panel || els.panel.hidden || typeof els.panel.getBoundingClientRect !== "function") return;
+  function updateMaximizeButton() {
+    if (!els.maximize) return;
+    var label = state.maximized ? "还原" : "放大";
+    els.maximize.setAttribute("aria-pressed", state.maximized ? "true" : "false");
+    els.maximize.setAttribute("aria-label", label + " DeepSeek 对话面板");
+    els.maximize.textContent = (state.maximized ? "↙ " : "↗ ") + label;
+  }
+
+  function togglePanelMaximize() {
+    if (!isDesktopPanel()) return panelSize();
+    var size;
+    if (!state.maximized) {
+      state.preMaximizeSize = panelSize();
+      state.maximized = true;
+      size = applyPanelSize(maximumPanelSize());
+    } else {
+      var restoreSize = state.preMaximizeSize || { width: PANEL_DEFAULT_WIDTH, height: PANEL_DEFAULT_HEIGHT };
+      state.maximized = false;
+      state.preMaximizeSize = null;
+      size = setPanelSize(restoreSize.width, restoreSize.height);
+    }
+    clampPanelPosition(size);
+    updateMaximizeButton();
+    return panelSize();
+  }
+
+  function resizedPanelSize(direction, startSize, deltaX, deltaY) {
+    var width = startSize.width;
+    var height = startSize.height;
+    if (direction.indexOf("e") !== -1) width += deltaX;
+    if (direction.indexOf("w") !== -1) width -= deltaX;
+    if (direction.indexOf("s") !== -1) height += deltaY;
+    if (direction.indexOf("n") !== -1) height -= deltaY;
+    return normalizePanelSize(width, height);
+  }
+
+  function beginPanelResize(event) {
+    if (!isDesktopPanel() || (event.button !== undefined && event.button !== 0)) return;
+    var handle = event.currentTarget;
+    var direction = handle && handle.getAttribute ? handle.getAttribute("data-resize") : "";
+    if (RESIZE_DIRECTIONS.indexOf(direction) === -1) return;
+    var startSize = panelSize();
     var rect = els.panel.getBoundingClientRect();
-    if (rect.width <= 0 || rect.height <= 0) return;
-    setPanelSize(rect.width, rect.height);
+    var viewport = viewportSize();
+    state.resizeSession = {
+      pointerId: event.pointerId,
+      direction: direction,
+      startX: Number(event.clientX) || 0,
+      startY: Number(event.clientY) || 0,
+      startSize: startSize,
+      startLeft: rect.left,
+      startTop: rect.top,
+      startRight: viewport.width - rect.right,
+      startBottom: viewport.height - rect.bottom,
+      handle: handle
+    };
+    if (handle.setPointerCapture && event.pointerId !== undefined) handle.setPointerCapture(event.pointerId);
+    if (event.preventDefault) event.preventDefault();
+  }
+
+  function movePanelResize(event) {
+    var session = state.resizeSession;
+    if (!session || (event.pointerId !== undefined && session.pointerId !== undefined && event.pointerId !== session.pointerId)) return;
+    var deltaX = (Number(event.clientX) || 0) - session.startX;
+    var deltaY = (Number(event.clientY) || 0) - session.startY;
+    var size = resizedPanelSize(session.direction, session.startSize, deltaX, deltaY);
+    applyPanelSize(size);
+    var viewport = viewportSize();
+    // 拖右边/下边时固定相对的左边/上边；拖左边/上边时 right/bottom 保持不动。
+    if (session.direction.indexOf("e") !== -1) {
+      els.panel.style.right = Math.round(Math.max(0, viewport.width - session.startLeft - size.width)) + "px";
+    } else els.panel.style.right = Math.round(Math.max(0, session.startRight)) + "px";
+    if (session.direction.indexOf("s") !== -1) {
+      els.panel.style.bottom = Math.round(Math.max(0, viewport.height - session.startTop - size.height)) + "px";
+    } else els.panel.style.bottom = Math.round(Math.max(0, session.startBottom)) + "px";
+    if (event.preventDefault) event.preventDefault();
+  }
+
+  function finishPanelResize(event) {
+    var session = state.resizeSession;
+    if (!session || (event.pointerId !== undefined && session.pointerId !== undefined && event.pointerId !== session.pointerId)) return;
+    state.resizeSession = null;
+    if (session.handle.releasePointerCapture && session.pointerId !== undefined) {
+      try { session.handle.releasePointerCapture(session.pointerId); } catch (error) { /* 捕获已释放时无需处理。 */ }
+    }
+    // 放大态拖拽只改变当前显示；放大前基准保留，普通态仅在结束时写一次。
+    var size = panelSize();
+    clampPanelPosition(size);
+    if (!state.maximized) writeStorage(CHAT_CONFIG.panelSizeStorageKey, JSON.stringify(size));
   }
 
   function el(tag, className, text) {
@@ -7317,9 +7549,16 @@ window.C_SYNTAX_ADD_EXERCISES([
     title.appendChild(el("strong", "", "问 DeepSeek"));
     title.appendChild(el("span", "chat-topic-hint", "C 语言问答，也可以简单聊两句"));
     header.appendChild(title);
+    var headerActions = el("div", "chat-header-actions");
+    var maximize = el("button", "chat-maximize", "↗ 放大");
+    maximize.type = "button";
+    maximize.setAttribute("aria-label", "放大 DeepSeek 对话面板");
+    maximize.setAttribute("aria-pressed", "false");
+    headerActions.appendChild(maximize);
     var close = el("button", "chat-close", "关闭");
     close.type = "button";
-    header.appendChild(close);
+    headerActions.appendChild(close);
+    header.appendChild(headerActions);
     panel.appendChild(header);
 
     // —— 没有 Key 时的引导区（含用户要求的「没有api？」按钮）——
@@ -7405,6 +7644,15 @@ window.C_SYNTAX_ADD_EXERCISES([
     composer.appendChild(sendRow);
     panel.appendChild(composer);
 
+    var resizeHandles = [];
+    RESIZE_DIRECTIONS.forEach(function (direction) {
+      var handle = el("div", "chat-resize-handle chat-resize-" + direction);
+      handle.setAttribute("data-resize", direction);
+      handle.setAttribute("aria-hidden", "true");
+      panel.appendChild(handle);
+      resizeHandles.push(handle);
+    });
+
     document.body.appendChild(launcher);
     document.body.appendChild(panel);
 
@@ -7412,8 +7660,9 @@ window.C_SYNTAX_ADD_EXERCISES([
       launcher: launcher, panel: panel, gate: gate, keyInput: keyInput, saveKey: saveKey, keyLink: keyLink,
       messages: messages, body: body, input: input, send: send, stop: stop, tools: tools,
       effortSelect: effortSelect, clearHistory: clearHistory, clearKey: clearKey,
-      keyState: keyState, close: close
+      keyState: keyState, close: close, header: header, maximize: maximize, resizeHandles: resizeHandles
     };
+    updateMaximizeButton();
   }
 
   // ------------------------------------------------------------------ 渲染
@@ -7613,7 +7862,10 @@ window.C_SYNTAX_ADD_EXERCISES([
   function wire() {
     els.launcher.addEventListener("click", function () {
       els.panel.hidden = false;
-      applyStoredPanelSize();
+      resetPanelPosition();
+      var size = state.maximized ? applyPanelSize(maximumPanelSize()) : applyStoredPanelSize();
+      clampPanelPosition(size);
+      updateMaximizeButton();
       refreshKeyUi();
       renderHistory();
       if (readStorage(CHAT_CONFIG.storageKey)) els.input.focus();
@@ -7622,6 +7874,18 @@ window.C_SYNTAX_ADD_EXERCISES([
     els.close.addEventListener("click", function () {
       if (state.controller) state.controller.abort();
       els.panel.hidden = true;
+    });
+    els.maximize.addEventListener("click", function () { togglePanelMaximize(); });
+    els.header.addEventListener("dblclick", function (event) {
+      var target = event.target;
+      if (target && ((typeof target.closest === "function" && target.closest("button")) || target.tagName === "BUTTON")) return;
+      togglePanelMaximize();
+    });
+    els.resizeHandles.forEach(function (handle) {
+      handle.addEventListener("pointerdown", beginPanelResize);
+      handle.addEventListener("pointermove", movePanelResize);
+      handle.addEventListener("pointerup", finishPanelResize);
+      handle.addEventListener("pointercancel", finishPanelResize);
     });
     els.saveKey.addEventListener("click", function () {
       var value = els.keyInput.value.trim();
@@ -7655,13 +7919,16 @@ window.C_SYNTAX_ADD_EXERCISES([
       }
     });
     window.addEventListener("resize", function () {
-      var current = panelSize();
-      setPanelSize(current.width, current.height);
+      var size;
+      if (state.maximized) size = applyPanelSize(maximumPanelSize());
+      else {
+        var current = state.panelSize || { width: PANEL_DEFAULT_WIDTH, height: PANEL_DEFAULT_HEIGHT };
+        size = applyPanelSize(current);
+        if (isDesktopPanel()) writeStorage(CHAT_CONFIG.panelSizeStorageKey, JSON.stringify(size));
+      }
+      if (!els.panel.hidden) clampPanelPosition(size);
+      updateMaximizeButton();
     });
-    if (typeof ResizeObserver !== "undefined") {
-      state.panelObserver = new ResizeObserver(function () { rememberRenderedPanelSize(); });
-      state.panelObserver.observe(els.panel);
-    }
   }
 
   // ------------------------------------------------------------- 测试与调试钩子
@@ -7685,6 +7952,9 @@ window.C_SYNTAX_ADD_EXERCISES([
     panelSize: panelSize,
     setPanelSize: setPanelSize,
     applyStoredPanelSize: applyStoredPanelSize,
+    maximumPanelSize: maximumPanelSize,
+    resizedPanelSize: resizedPanelSize,
+    togglePanelMaximize: togglePanelMaximize,
     storage: { read: readStorage, write: writeStorage },
     open: function () { els.launcher.click(); },
     elements: function () { return els; }
