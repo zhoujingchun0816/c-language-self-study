@@ -6,6 +6,8 @@
 
 下载 `dist/c语言自学本地网站v1.41.html`，双击即可打开；电脑和手机都能使用，无需安装、无需联网。只有“问 DeepSeek”需要联网并由你填写 API Key，Key 只保存在浏览器本地。
 
+正式版本见仓库 [Releases](https://github.com/zhoujingchun0816/c-language-self-study/releases) 页（含 Windows 免安装 exe 与 Android apk）。
+
 ## 功能一览
 
 - 405 条 C 语言词条，覆盖 16 个分类。
