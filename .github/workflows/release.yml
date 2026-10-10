@@ -18,7 +18,25 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Prepare release assets
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          mkdir -p release-assets
+          cp "dist/C语言小蓝书v${version}-免安装版.exe" "release-assets/C-SelfStudy-v${version}-portable.exe"
+          cp "dist/C语言小蓝书v${version}.apk" "release-assets/C-SelfStudy-v${version}-android.apk"
+          cp "dist/c语言自学本地网站v${version}.html" "release-assets/c-syntax-lookup-v${version}.html"
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create "$GITHUB_REF_NAME" --title "C语言小蓝书 $GITHUB_REF_NAME" --notes-file .github/release-notes.md dist/*
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          gh release delete "$GITHUB_REF_NAME" --yes || true
+          gh release create "$GITHUB_REF_NAME" \
+            --title "C语言小蓝书 $GITHUB_REF_NAME" \
+            --notes-file .github/release-notes.md \
+            "release-assets/C-SelfStudy-v${version}-portable.exe" \
+            "release-assets/C-SelfStudy-v${version}-android.apk" \
+            "release-assets/c-syntax-lookup-v${version}.html"

@@ -8,13 +8,13 @@
 
 ## Windows 免安装版
 
-Windows 用户也可以下载 `C语言小蓝书v<版本>-免安装版.exe`，无需安装，双击即可在 Edge 或 Chrome 的独立应用窗口中使用。程序会把内嵌页面与独立浏览器配置保存到 `%LOCALAPPDATA%\C语言自学本地网站\`；删除该目录即可彻底清理。
+Windows 用户也可以从 Releases 下载 `C-SelfStudy-v<版本>-portable.exe`（Windows 免安装版），无需安装，双击即可在 Edge 或 Chrome 的独立应用窗口中使用。程序会把内嵌页面与独立浏览器配置保存到 `%LOCALAPPDATA%\C语言自学本地网站\`；删除该目录即可彻底清理。
 
 ## Android 版
 
-Android 用户可以下载 `C语言小蓝书v<版本>.apk` 侧载到手机；应用名称显示为「C语言小蓝书」。首次安装时需要为文件管理器或浏览器开启“允许安装未知应用”。页面数据保存在 App 私有目录中，卸载 App 时会一并清理。APK 使用 debug 证书签名，仅供个人使用，不能上架应用商店。
+Android 用户可以从 Releases 下载 `C-SelfStudy-v<版本>-android.apk`（Android 安装包）侧载到手机；应用名称显示为「C语言小蓝书」。首次安装时需要为文件管理器或浏览器开启“允许安装未知应用”。页面数据保存在 App 私有目录中，卸载 App 时会一并清理。APK 使用 debug 证书签名，仅供个人使用，不能上架应用商店。
 
-正式版本见仓库 [Releases](https://github.com/zhoujingchun0816/c-language-self-study/releases) 页（含 Windows 免安装 exe 与 Android apk）。
+正式版本见仓库 [Releases](https://github.com/zhoujingchun0816/c-language-self-study/releases) 页；单文件网页附件名为 `c-syntax-lookup-v<版本>.html`。
 
 ## 三套主题切换
 

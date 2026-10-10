@@ -4,9 +4,9 @@
 
 ## 怎么用
 
-下载 `dist/c语言自学本地网站v1.41.html`，双击即可打开；电脑和手机都能使用，无需安装、无需联网。只有“问 DeepSeek”需要联网并由你填写 API Key，Key 只保存在浏览器本地。
+源码镜像中的单文件网页位于 `dist/c语言自学本地网站v1.41.html`，双击即可打开；电脑和手机都能使用，无需安装、无需联网。只有“问 DeepSeek”需要联网并由你填写 API Key，Key 只保存在浏览器本地。
 
-正式版本见仓库 [Releases](https://github.com/zhoujingchun0816/c-language-self-study/releases) 页（含 Windows 免安装 exe 与 Android apk）。
+正式版本见仓库 [Releases](https://github.com/zhoujingchun0816/c-language-self-study/releases) 页：Windows 免安装版 `C-SelfStudy-v1.41-portable.exe`、Android 安装包 `C-SelfStudy-v1.41-android.apk`、单文件网页 `c-syntax-lookup-v1.41.html`。
 
 ## 功能一览
 
