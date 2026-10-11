@@ -56,7 +56,7 @@
     ),
     make(
       "ex-advanced-null-default", "为空指针提供默认值",
-      ["null-pointer", "dereference-operator"], 2,
+      ["null-pointer", "dereference-operator"], 1,
       "写一个 value_or 函数：指针非空时返回所指整数，为空时返回给定默认值。",
       ["解引用前必须检查 NULL", "分别测试有效指针和空指针", "输出为 9 42"],
       ["NULL 表示没有指向有效对象", "条件运算符可以简洁选择返回值"],
@@ -94,7 +94,7 @@
     ),
     make(
       "ex-advanced-matrix-row-sums", "计算矩阵每行总和",
-      ["multidimensional-array", "one-dimensional-array"], 2,
+      ["multidimensional-array", "one-dimensional-array"], 1,
       "遍历 2 行 3 列矩阵 {{1,2,3},{4,5,6}}，输出每一行的总和。",
       ["使用二维数组", "使用两层循环", "两行输出依次为 row0=6 和 row1=15"],
       ["外层循环选择行", "每次进入新行时把总和清零"],
@@ -160,7 +160,7 @@
     ),
     make(
       "ex-advanced-token-summary", "拆分句子并统计单词",
-      ["strtok-function", "strcmp-function"], 3,
+      ["strtok-function", "strcmp-function"], 2,
       "用 strtok 按空格拆分 \"red green blue green\"，统计单词总数和 green 的次数。",
       ["输入必须是可修改字符数组", "后续 strtok 调用传 NULL", "输出为 words=4 green=2"],
       ["strtok 会改写分隔符位置", "每取得一个单词就增加总数，再用 strcmp 判断内容"],
@@ -201,7 +201,7 @@
     ),
     make(
       "ex-advanced-struct-return", "传入并返回结构体",
-      ["struct-pass-return", "struct-initialization"], 3,
+      ["struct-pass-return", "struct-initialization"], 2,
       "写 add 函数，接收两个二维向量结构体，返回各分量相加得到的新向量。",
       ["参数和返回值都使用 struct Vector", "不得修改两个原对象", "输出为 (4,6)"],
       ["结构体可以按值传入函数", "在函数内创建结果对象后直接 return"],
@@ -255,7 +255,7 @@
     ),
     make(
       "ex-advanced-realloc-grow", "安全扩容动态数组",
-      ["realloc-function", "dynamic-array", "free-function"], 3,
+      ["realloc-function", "dynamic-array", "free-function"], 2,
       "先申请 3 个 int 保存 2、4、6，再用 realloc 扩到 5 个并补入 8、10。",
       ["realloc 结果先存临时指针", "失败时释放旧内存", "输出为 2 4 6 8 10"],
       ["直接覆盖原指针会在失败时丢失旧地址", "扩容成功后再更新主指针"],
@@ -271,7 +271,7 @@
     ),
     make(
       "ex-advanced-qsort-descending", "用 qsort 降序排列",
-      ["qsort-function", "function-pointer"], 3,
+      ["qsort-function", "function-pointer"], 2,
       "用 qsort 把 {5,3,9,1,7} 按从大到小排序并打印。",
       ["比较函数必须返回三向比较结果", "不得用两数直接相减", "输出为 9 7 5 3 1"],
       ["把 void 指针转换成 const int * 后解引用", "降序时较大的左值应排在前面"],
@@ -286,7 +286,7 @@
     ),
     make(
       "ex-advanced-bsearch-number", "在有序数组中查找",
-      ["bsearch-function", "qsort-function"], 3,
+      ["bsearch-function", "qsort-function"], 2,
       "先把 {8,2,6,4,10} 升序排列，再用 bsearch 查找 6 和 7。",
       ["qsort 与 bsearch 使用同一个比较函数", "分别处理找到和未找到", "输出为 six=6 seven=missing"],
       ["bsearch 要求数组已经按相同比较规则排序", "返回 NULL 表示没有匹配元素"],
@@ -316,7 +316,7 @@
     ),
     make(
       "ex-advanced-math-toolbox", "组合常用数学函数",
-      ["abs-function", "sqrt-function", "pow-function"], 2,
+      ["abs-function", "sqrt-function", "pow-function"], 1,
       "计算 -7 的绝对值、81 的平方根和 2 的 5 次方，并按指定格式输出。",
       ["分别使用 abs、sqrt、pow", "浮点结果输出零位小数", "输出为 abs=7 sqrt=9 pow=32"],
       ["abs 在 stdlib.h 中", "sqrt 和 pow 在 math.h 中并返回 double"],
@@ -328,7 +328,7 @@
     ),
     make(
       "ex-advanced-tmpfile-lines", "临时文件统计行数",
-      ["fprintf-function", "fgets-function", "fclose-function"], 3,
+      ["fprintf-function", "fgets-function", "fclose-function"], 2,
       "在当前工作目录创建临时文件，用 fprintf 写入三行文字，回到开头后用 fgets 逐行读取并统计；程序结束时删除该文件。",
       ["使用 fopen 以读写方式创建 ex-tmp-lines.txt", "读取前调用 rewind", "结束时 fclose 并删除临时文件"],
       ["使用 w+ 模式可以在同一个流中写入和读取", "fgets 返回 NULL 时读取结束"],
@@ -387,7 +387,7 @@
     ),
     make(
       "ex-advanced-macro-clamp", "用宏限制数值范围",
-      ["object-macro", "function-macro"], 2,
+      ["object-macro", "function-macro"], 1,
       "定义上下限常量宏 MIN_SCORE、MAX_SCORE 和函数式宏 CLAMP，把 -4、72、120 限制到 0 至 100。",
       ["上下限必须是对象式宏", "CLAMP 的参数和整体都加括号", "输出为 0 72 100"],
       ["低于下限取下限，高于上限取上限", "宏实参可能在展开后参与更大表达式"],
@@ -427,7 +427,7 @@
     ),
     make(
       "ex-advanced-fix-boundaries", "修复边界与计算错误",
-      ["array-bounds", "off-by-one", "integer-division"], 3,
+      ["array-bounds", "off-by-one", "integer-division"], 2,
       "修好数组平均值程序：循环不得越界，并让 1、2、2 的平均值保留两位小数。",
       ["循环只访问 0 到 count-1", "除法前转换为浮点计算", "输出为 average=1.67"],
       ["循环条件应使用 i < count", "整数相除会先丢掉小数部分"],
@@ -440,7 +440,7 @@
     ),
     make(
       "ex-advanced-score-report", "动态成绩排序与查找",
-      ["struct-type", "realloc-function", "qsort-function"], 3,
+      ["struct-type", "realloc-function", "qsort-function"], 2,
       "动态保存三条学生成绩记录，扩容加入第四条，按分数降序排序并查找分数 88。",
       ["记录使用结构体动态数组", "扩容必须使用临时指针", "排序后输出四条名字和 found=Bob"],
       ["比较函数先比较 score 字段", "bsearch 的键也可做成只填写分数的结构体"],

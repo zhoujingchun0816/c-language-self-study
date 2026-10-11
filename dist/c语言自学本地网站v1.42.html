@@ -457,6 +457,9 @@ summary.roadmap-heading { margin: 0; padding: 13px 16px; cursor: pointer; }
 .roadmap-fallback-detail { display: block; color: var(--muted); font-size: 0.78rem; }
 
 .exercise-section { padding-top: 4px; border-top: 1px solid var(--border); }
+.exercise-entry-generate { margin-top: 18px; padding: 18px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface-2); }
+.exercise-empty-message { margin: 0; color: var(--muted); line-height: 1.7; }
+.exercise-entry-generate .exercise-generate { margin-top: 12px; }
 .exercise-card { margin-top: 14px; padding: 18px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface-2); }
 .exercise-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; }
 .exercise-title { margin: 0; font-size: 1.04rem; }
@@ -476,8 +479,20 @@ summary.roadmap-heading { margin: 0; padding: 13px 16px; cursor: pointer; }
 .exercise-toggle[aria-expanded="true"] { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
 .exercise-disclosure { margin-top: 10px; padding: 12px; border-left: 3px solid var(--accent); border-radius: 12px; background: var(--surface); }
 .exercise-answer { padding: 0; border-left: 0; background: transparent; }
-.exercise-output { margin-top: 15px; padding: 11px 12px; border: 1px dashed var(--border); border-radius: 14px; background: var(--surface); }
-.exercise-output pre { margin: 7px 0 0; padding: 0; background: transparent; color: var(--text); white-space: pre-wrap; }
+/* 「运行后应该看到」：左侧改成一条直的强调竖线，左边不留圆角，字号与行高放大一档，读起来更清楚 */
+.exercise-output { margin-top: 15px; padding: 12px 14px 12px 14px; border: 1px dashed var(--border); border-left: 3px solid var(--accent); border-radius: 0 14px 14px 0; background: var(--surface); }
+.exercise-output pre {
+  margin: 7px 0 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+  white-space: pre-wrap;
+}
+.exercise-output .exercise-label { display: block; margin-bottom: 2px; }
 .exercise-review { display: grid; gap: 9px; margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--border); }
 .exercise-review .exercise-subtitle { margin: 0; }
 .exercise-code-input { width: 100%; min-height: 150px; padding: 10px 11px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--text); font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; line-height: 1.55; resize: vertical; }
@@ -4713,7 +4728,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     id: "ex-cast-average",
     title: "计算小数平均值",
     entryIds: ["explicit-cast", "integer-division"],
-    difficulty: 2,
+    difficulty: 1,
     prompt: "整数 2 和 3 的平均值应为 2.5，请用显式类型转换避免整数除法丢失小数。",
     requirements: ["两个原始数必须使用 int", "除法前必须显式转换为 double", "结果必须保留一位小数", "必须输出 average = 2.5"],
     hints: ["两个 int 直接相除只会得到整数", "把相加结果写成 (double)(a + b) 后再除以 2"],
@@ -4830,7 +4845,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     id: "ex-continue-odd",
     title: "跳过偶数",
     entryIds: ["continue-statement", "for-loop", "arithmetic-operators"],
-    difficulty: 2,
+    difficulty: 1,
     prompt: "用 for 循环检查 1 到 6，遇到偶数就跳过本轮，只输出其中的奇数。",
     requirements: ["必须循环处理 1 到 6", "必须用 % 2 判断偶数", "遇到偶数必须执行 continue", "只输出 1、3、5"],
     hints: ["i % 2 == 0 表示 i 是偶数", "continue 会直接进入 for 的下一次更新和判断"],
@@ -4843,7 +4858,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     id: "ex-array-count-sum",
     title: "统计数组并求和",
     entryIds: ["one-dimensional-array", "sizeof-array-decay", "for-loop"],
-    difficulty: 2,
+    difficulty: 1,
     prompt: "把 1 到 5 放进数组，用 sizeof 自动算出元素个数，再循环求和并输出个数与总和。",
     requirements: ["数组必须包含 1、2、3、4、5", "元素个数必须用 sizeof 计算", "必须用循环累加", "输出个数时必须转换为 unsigned long"],
     hints: ["数组元素个数可写成 sizeof values / sizeof values[0]", "用 %lu 输出转换后的 unsigned long 个数"],
@@ -4856,7 +4871,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     id: "ex-array-average",
     title: "计算成绩平均分",
     entryIds: ["array-initialization", "one-dimensional-array", "explicit-cast"],
-    difficulty: 2,
+    difficulty: 1,
     prompt: "把 80、90、75、95、90 五个成绩初始化进数组，计算平均分并保留一位小数。",
     requirements: ["必须在声明数组时写入五个成绩", "必须用循环求总分", "除法前必须转换成 double", "必须输出 average = 86.0"],
     hints: ["先把每个元素累加到 sum", "用 (double)sum / 5 可保留小数部分"],
@@ -4895,7 +4910,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     id: "ex-function-add",
     title: "编写加法函数",
     entryIds: ["function-definition", "function-prototype", "function-parameters"],
-    difficulty: 2,
+    difficulty: 1,
     prompt: "先声明再定义函数 int add(int a, int b)，让它返回两个参数的和，并在 main 中输出 add(5, 7) 的结果。",
     requirements: ["main 前必须有 add 的函数原型", "add 必须接收两个 int 参数", "add 必须返回参数之和", "main 必须输出 sum = 12"],
     hints: ["原型可以写成 int add(int a, int b);", "函数体中用 return a + b; 把结果交回调用处"],
@@ -4908,7 +4923,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     id: "ex-function-max3",
     title: "函数求三个数最大值",
     entryIds: ["function-definition", "function-parameters", "return-statement"],
-    difficulty: 2,
+    difficulty: 1,
     prompt: "定义 int max3(int a, int b, int c)，逐步找出三个整数的最大值，并在 main 中输出 max3(4, 9, 6)。",
     requirements: ["函数名必须是 max3", "函数必须接收三个 int 参数", "必须通过比较更新最大值", "main 必须输出 max = 9"],
     hints: ["先假设 a 是最大值", "再分别比较 b 和 c，遇到更大值就更新 max"],
@@ -4921,7 +4936,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     id: "ex-recursive-factorial",
     title: "递归计算阶乘",
     entryIds: ["recursion", "function-definition", "return-statement"],
-    difficulty: 2,
+    difficulty: 1,
     prompt: "用递归函数 factorial 计算 5 的阶乘。规定 0 或 1 的阶乘为 1，其余情况返回 n 乘 factorial(n - 1)。",
     requirements: ["函数名必须是 factorial", "必须有 n <= 1 时返回 1 的结束条件", "必须递归调用 factorial(n - 1)", "main 必须输出 factorial = 120"],
     hints: ["递归一定要先写能够停止的基本情况", "5 的阶乘等于 5 * 4 * 3 * 2 * 1"],
@@ -4991,7 +5006,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     ),
     make(
       "ex-advanced-null-default", "为空指针提供默认值",
-      ["null-pointer", "dereference-operator"], 2,
+      ["null-pointer", "dereference-operator"], 1,
       "写一个 value_or 函数：指针非空时返回所指整数，为空时返回给定默认值。",
       ["解引用前必须检查 NULL", "分别测试有效指针和空指针", "输出为 9 42"],
       ["NULL 表示没有指向有效对象", "条件运算符可以简洁选择返回值"],
@@ -5029,7 +5044,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     ),
     make(
       "ex-advanced-matrix-row-sums", "计算矩阵每行总和",
-      ["multidimensional-array", "one-dimensional-array"], 2,
+      ["multidimensional-array", "one-dimensional-array"], 1,
       "遍历 2 行 3 列矩阵 {{1,2,3},{4,5,6}}，输出每一行的总和。",
       ["使用二维数组", "使用两层循环", "两行输出依次为 row0=6 和 row1=15"],
       ["外层循环选择行", "每次进入新行时把总和清零"],
@@ -5095,7 +5110,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     ),
     make(
       "ex-advanced-token-summary", "拆分句子并统计单词",
-      ["strtok-function", "strcmp-function"], 3,
+      ["strtok-function", "strcmp-function"], 2,
       "用 strtok 按空格拆分 \"red green blue green\"，统计单词总数和 green 的次数。",
       ["输入必须是可修改字符数组", "后续 strtok 调用传 NULL", "输出为 words=4 green=2"],
       ["strtok 会改写分隔符位置", "每取得一个单词就增加总数，再用 strcmp 判断内容"],
@@ -5136,7 +5151,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     ),
     make(
       "ex-advanced-struct-return", "传入并返回结构体",
-      ["struct-pass-return", "struct-initialization"], 3,
+      ["struct-pass-return", "struct-initialization"], 2,
       "写 add 函数，接收两个二维向量结构体，返回各分量相加得到的新向量。",
       ["参数和返回值都使用 struct Vector", "不得修改两个原对象", "输出为 (4,6)"],
       ["结构体可以按值传入函数", "在函数内创建结果对象后直接 return"],
@@ -5190,7 +5205,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     ),
     make(
       "ex-advanced-realloc-grow", "安全扩容动态数组",
-      ["realloc-function", "dynamic-array", "free-function"], 3,
+      ["realloc-function", "dynamic-array", "free-function"], 2,
       "先申请 3 个 int 保存 2、4、6，再用 realloc 扩到 5 个并补入 8、10。",
       ["realloc 结果先存临时指针", "失败时释放旧内存", "输出为 2 4 6 8 10"],
       ["直接覆盖原指针会在失败时丢失旧地址", "扩容成功后再更新主指针"],
@@ -5206,7 +5221,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     ),
     make(
       "ex-advanced-qsort-descending", "用 qsort 降序排列",
-      ["qsort-function", "function-pointer"], 3,
+      ["qsort-function", "function-pointer"], 2,
       "用 qsort 把 {5,3,9,1,7} 按从大到小排序并打印。",
       ["比较函数必须返回三向比较结果", "不得用两数直接相减", "输出为 9 7 5 3 1"],
       ["把 void 指针转换成 const int * 后解引用", "降序时较大的左值应排在前面"],
@@ -5221,7 +5236,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     ),
     make(
       "ex-advanced-bsearch-number", "在有序数组中查找",
-      ["bsearch-function", "qsort-function"], 3,
+      ["bsearch-function", "qsort-function"], 2,
       "先把 {8,2,6,4,10} 升序排列，再用 bsearch 查找 6 和 7。",
       ["qsort 与 bsearch 使用同一个比较函数", "分别处理找到和未找到", "输出为 six=6 seven=missing"],
       ["bsearch 要求数组已经按相同比较规则排序", "返回 NULL 表示没有匹配元素"],
@@ -5251,7 +5266,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     ),
     make(
       "ex-advanced-math-toolbox", "组合常用数学函数",
-      ["abs-function", "sqrt-function", "pow-function"], 2,
+      ["abs-function", "sqrt-function", "pow-function"], 1,
       "计算 -7 的绝对值、81 的平方根和 2 的 5 次方，并按指定格式输出。",
       ["分别使用 abs、sqrt、pow", "浮点结果输出零位小数", "输出为 abs=7 sqrt=9 pow=32"],
       ["abs 在 stdlib.h 中", "sqrt 和 pow 在 math.h 中并返回 double"],
@@ -5263,7 +5278,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     ),
     make(
       "ex-advanced-tmpfile-lines", "临时文件统计行数",
-      ["fprintf-function", "fgets-function", "fclose-function"], 3,
+      ["fprintf-function", "fgets-function", "fclose-function"], 2,
       "在当前工作目录创建临时文件，用 fprintf 写入三行文字，回到开头后用 fgets 逐行读取并统计；程序结束时删除该文件。",
       ["使用 fopen 以读写方式创建 ex-tmp-lines.txt", "读取前调用 rewind", "结束时 fclose 并删除临时文件"],
       ["使用 w+ 模式可以在同一个流中写入和读取", "fgets 返回 NULL 时读取结束"],
@@ -5322,7 +5337,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     ),
     make(
       "ex-advanced-macro-clamp", "用宏限制数值范围",
-      ["object-macro", "function-macro"], 2,
+      ["object-macro", "function-macro"], 1,
       "定义上下限常量宏 MIN_SCORE、MAX_SCORE 和函数式宏 CLAMP，把 -4、72、120 限制到 0 至 100。",
       ["上下限必须是对象式宏", "CLAMP 的参数和整体都加括号", "输出为 0 72 100"],
       ["低于下限取下限，高于上限取上限", "宏实参可能在展开后参与更大表达式"],
@@ -5362,7 +5377,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     ),
     make(
       "ex-advanced-fix-boundaries", "修复边界与计算错误",
-      ["array-bounds", "off-by-one", "integer-division"], 3,
+      ["array-bounds", "off-by-one", "integer-division"], 2,
       "修好数组平均值程序：循环不得越界，并让 1、2、2 的平均值保留两位小数。",
       ["循环只访问 0 到 count-1", "除法前转换为浮点计算", "输出为 average=1.67"],
       ["循环条件应使用 i < count", "整数相除会先丢掉小数部分"],
@@ -5375,7 +5390,7 @@ window.C_SYNTAX_ADD_EXERCISES([
     ),
     make(
       "ex-advanced-score-report", "动态成绩排序与查找",
-      ["struct-type", "realloc-function", "qsort-function"], 3,
+      ["struct-type", "realloc-function", "qsort-function"], 2,
       "动态保存三条学生成绩记录，扩容加入第四条，按分数降序排序并查找分数 88。",
       ["记录使用结构体动态数组", "扩容必须使用临时指针", "排序后输出四条名字和 found=Bob"],
       ["比较函数先比较 score 字段", "bsearch 的键也可做成只填写分数的结构体"],
@@ -5399,6 +5414,812 @@ window.C_SYNTAX_ADD_EXERCISES([
     )
   ]);
 }());
+  </script>
+  <script data-source="data/exercises/30-stdio-and-more.js">
+(function () {
+  "use strict";
+
+  function program(headers, declarations, body) {
+    var includes = headers.map(function (header) {
+      return "#include <" + header + ">";
+    }).join("\n");
+    var prefix = declarations ? "\n\n" + declarations.trim() : "";
+    return includes + prefix + "\n\nint main(void) {\n" +
+      body.map(function (line) { return "    " + line; }).join("\n") +
+      "\n    return 0;\n}\n";
+  }
+
+  function make(id, title, entryIds, difficulty, prompt, requirements, hints,
+                headers, declarations, body, expectedOutput, explanation) {
+    return {
+      id: id,
+      title: title,
+      entryIds: entryIds,
+      difficulty: difficulty,
+      prompt: prompt,
+      requirements: requirements,
+      hints: hints,
+      starter: program(headers, "", ["/* " + prompt + " */"]),
+      solution: program(headers, declarations, body),
+      expectedOutput: expectedOutput,
+      explanation: explanation
+    };
+  }
+
+  window.C_SYNTAX_ADD_EXERCISES([
+    make(
+      "ex-stdio-scanf-parse", "用格式串解析文本",
+      ["sscanf-function"], 1,
+      "不用键盘输入，改用 sscanf 从固定字符串中解析整数和小数，并输出成功转换的项数。",
+      ["必须使用 sscanf 完成解析", "格式串同时包含 %d 与 %lf", "输出转换项数和两个解析结果"],
+      ["sscanf 与 scanf 使用相同的转换说明符", "成功转换的赋值项数就是函数返回值"],
+      ["stdio.h"], "",
+      ["int whole = 0;", "double decimal = 0.0;", "int count = sscanf(\"42 3.5\", \"%d %lf\", &whole, &decimal);",
+       "printf(\"count=%d value=%d %.1f\\n\", count, whole, decimal);"],
+      "count=2 value=42 3.5\n",
+      "sscanf 从内存中的字符串读取数据，因此无需交互输入。返回值记录真正完成赋值的转换项数，可用来判断输入是否完整。"
+    ),
+    make(
+      "ex-stdio-getchar-eof", "观察空输入的 EOF",
+      ["getchar-function"], 1,
+      "在没有标准输入数据的环境调用 getchar，输出它的返回值以及它是否等于 EOF。",
+      ["必须把 getchar 返回值保存在 int 中", "必须与 EOF 进行比较", "按指定格式输出返回值和判断结果"],
+      ["getchar 必须用 int 接收，才能同时表示字符和 EOF", "验证器不会向程序提供标准输入数据"],
+      ["stdio.h"], "",
+      ["int value = getchar();", "printf(\"value=%d eof=%d\\n\", value, value == EOF);"],
+      "value=-1 eof=1\n",
+      "标准输入立即结束时，getchar 返回 EOF。使用 int 保存返回值后才能可靠地区分所有 unsigned char 值与文件结束标记。"
+    ),
+    make(
+      "ex-stdio-putchar-word", "逐字符输出短词",
+      ["putchar-function"], 1,
+      "使用 putchar 逐个输出字符数组中的 C11，最后再单独输出一个换行符。",
+      ["正文字符必须由 putchar 输出", "使用循环遍历字符数组", "最后输出换行符"],
+      ["字符串结尾的空字符不能当作正文输出", "换行字符写作 '\\n'"],
+      ["stdio.h"], "",
+      ["const char text[] = \"C11\";", "for (size_t i = 0; text[i] != '\\0'; ++i) {", "    putchar(text[i]);", "}", "putchar('\\n');"],
+      "C11\n",
+      "putchar 每次接收一个字符值。循环在空字符前停止，再补一个换行，就能得到确定且没有额外字节的输出。"
+    ),
+    make(
+      "ex-stdio-puts-lines", "用 puts 输出两行",
+      ["puts-function"], 1,
+      "连续调用两次 puts 输出两个固定短句，观察函数自动在每个字符串后添加换行。",
+      ["必须调用两次 puts", "传入的字符串中不要写换行符", "两段文字各占一行"],
+      ["puts 会自动追加一个换行符", "它要求参数指向以空字符结尾的字符串"],
+      ["stdio.h"], "",
+      ["puts(\"hello\");", "puts(\"C language\");"],
+      "hello\nC language\n",
+      "puts 输出完整字符串后会自动换行，所以字符串本身不需要包含换行符。连续调用自然形成两行结果。"
+    ),
+    make(
+      "ex-stdio-sprintf-label", "秒数换算成 01:02:05",
+      ["sprintf-function"], 1,
+      "把总秒数 3725 拆成时、分、秒，再用 sprintf 拼成 01:02:05 这样的文本并打印出来。",
+      ["必须用 / 和 % 拆出时、分、秒", "必须用 sprintf 拼成 %02d:%02d:%02d 的文本", "最后用 printf 打印这个文本"],
+      ["一小时 3600 秒、一分钟 60 秒", "sprintf 的第一个参数是目标字符数组，后面和 printf 一样"],
+      ["stdio.h"], "",
+      ["int total = 3725;", "int hour = total / 3600;", "int minute = total % 3600 / 60;", "int second = total % 60;",
+       "char text[16];", "sprintf(text, \"%02d:%02d:%02d\", hour, minute, second);", "printf(\"%s\\n\", text);"],
+      "01:02:05\n",
+      "3725 秒 = 1 小时 2 分 5 秒，%02d 表示至少两位、不足补 0。sprintf 与 printf 的唯一区别是它把结果写进字符数组，所以后续还能继续加工。"
+    ),
+    make(
+      "ex-file-fopen-missing", "判断 fopen 打开失败",
+      ["fopen-function"], 1,
+      "先删除一个固定测试文件，再尝试以只读模式打开它，并用 NULL 判断文件是否不存在。",
+      ["必须先调用 remove 清理同名文件", "必须使用只读模式调用 fopen", "打开失败时输出 missing=yes"],
+      ["不存在的文件不能用 r 模式创建", "fopen 失败时返回 NULL"],
+      ["stdio.h"], "",
+      ["const char *path = \"csyntax_missing_fopen_exercise.txt\";", "remove(path);", "FILE *file = fopen(path, \"r\");",
+       "printf(\"missing=%s\\n\", file == NULL ? \"yes\" : \"no\");", "if (file != NULL) {", "    fclose(file);", "}", "remove(path);"],
+      "missing=yes\n",
+      "只读模式不会创建文件，因此清理同名文件后 fopen 应返回 NULL。先判断返回值再决定是否 fclose，避免操作空指针。"
+    ),
+    make(
+      "ex-file-fgetc-read", "用 fgetc 读完整文件",
+      ["fgetc-function"], 2,
+      "把固定文本写入测试文件，再用 fgetc 逐字符读到 EOF，输出内容并删除测试文件。",
+      ["文件名必须固定且结束时调用 remove", "读取结果必须保存在 int 中", "循环必须在 fgetc 返回 EOF 时结束"],
+      ["先用写模式建立测试文件，再关闭并重新只读打开", "fgetc 返回的普通字符可交给 putchar 输出"],
+      ["stdio.h"], "",
+      ["const char *path = \"csyntax_fgetc_exercise.txt\";", "FILE *file = fopen(path, \"w\");", "if (file == NULL) { return 1; }",
+       "fputs(\"read me\\n\", file);", "fclose(file);", "file = fopen(path, \"r\");", "if (file == NULL) { remove(path); return 1; }",
+       "int character;", "while ((character = fgetc(file)) != EOF) {", "    putchar(character);", "}", "fclose(file);", "remove(path);"],
+      "read me\n",
+      "fgetc 用 int 同时表示字节值和 EOF。程序先构造确定内容，再逐字符复制到标准输出，最后关闭并删除固定测试文件。"
+    ),
+    make(
+      "ex-file-fputc-write", "用 fputc 写字符",
+      ["fputc-function"], 2,
+      "使用 fputc 向固定测试文件依次写入三个字符，再读回整行并清理文件。",
+      ["三个字符都必须通过 fputc 写入", "写完后必须关闭再重新打开", "程序结束前调用 remove 删除文件"],
+      ["写模式会新建或截断文件", "可用 fgets 一次读回带换行的短文本"],
+      ["stdio.h"], "",
+      ["const char *path = \"csyntax_fputc_exercise.txt\";", "FILE *file = fopen(path, \"w\");", "if (file == NULL) { return 1; }",
+       "fputc('C', file);", "fputc('!', file);", "fputc('\\n', file);", "fclose(file);", "file = fopen(path, \"r\");",
+       "if (file == NULL) { remove(path); return 1; }", "char line[8];", "if (fgets(line, sizeof line, file) != NULL) {", "    printf(\"%s\", line);", "}",
+       "fclose(file);", "remove(path);"],
+      "C!\n",
+      "fputc 每次把一个字符写入流。关闭写入流可完成刷新，重新打开后读回相同三个字符，并在结尾删除测试文件。"
+    ),
+    make(
+      "ex-string-strncpy-truncate", "安全截断字符串",
+      ["strncpy-function", "strncpy-missing-terminator"], 2,
+      "把 syntax 截断复制进五字节数组，只复制四个字符并手动补上字符串终止符。",
+      ["必须使用 strncpy", "复制数量必须为数组容量减一", "最后一个元素必须手动写入空字符"],
+      ["strncpy 截断源字符串时不会自动补空字符", "sizeof destination 可得到整个数组容量"],
+      ["stdio.h", "string.h"],
+      "static void copy_prefix(char *destination, size_t capacity, const char *source) {\n    strncpy(destination, source, capacity - 1U);\n    destination[capacity - 1U] = '\\0';\n}",
+      ["char destination[5];", "copy_prefix(destination, sizeof destination, \"syntax\");", "printf(\"%s\\n\", destination);"],
+      "synt\n",
+      "目标数组只有五字节，因此最多保留四个可见字符。截断复制后显式写入空字符，才能把结果安全地当作字符串输出。"
+    ),
+    make(
+      "ex-memory-memcpy-array", "复制整数数组",
+      ["memcpy-function"], 1,
+      "使用 memcpy 把三个整数从源数组复制到目标数组，并按顺序输出复制后的内容。",
+      ["必须使用 memcpy", "复制字节数通过 sizeof 源数组获得", "输出三个目标元素"],
+      ["两个数组都是真正的 int 数组", "memcpy 的长度参数以字节为单位"],
+      ["stdio.h", "string.h"], "",
+      ["const int source[] = {3, 5, 8};", "int target[3] = {0};", "memcpy(target, source, sizeof source);",
+       "printf(\"%d %d %d\\n\", target[0], target[1], target[2]);"],
+      "3 5 8\n",
+      "源数组与目标数组大小一致且不重叠，适合直接用 memcpy 复制。sizeof source 给出包含三个整数的完整字节数。"
+    ),
+    make(
+      "ex-memory-memset-text", "批量填充字符数组",
+      ["memset-function"], 1,
+      "使用 memset 把字符数组的前五个字节都填成 A，再补空字符并输出字符串。",
+      ["必须使用 memset 填充", "只填充前五个字节", "最后一个字节写入空字符"],
+      ["memset 的第二个参数会转换成 unsigned char", "有效 C 字符串必须以空字符结束"],
+      ["stdio.h", "string.h"], "",
+      ["char text[6];", "memset(text, 'A', 5U);", "text[5] = '\\0';", "printf(\"%s\\n\", text);"],
+      "AAAAA\n",
+      "memset 适合按字节重复填充值，但不会建立字符串结尾。额外写入空字符后，五个 A 才构成合法字符串。"
+    ),
+    make(
+      "ex-type-union-members", "切换联合成员",
+      ["union-type"], 2,
+      "定义同时拥有 int 与 double 成员的联合，分别写入并立即读取当前有效成员。",
+      ["必须定义并使用 union", "每次只读取最后写入的成员", "整数和小数各输出一行"],
+      ["联合的成员共享同一段存储", "写入另一个成员后不要继续读取旧成员"],
+      ["stdio.h"],
+      "union Number {\n    int integer;\n    double decimal;\n};",
+      ["union Number value;", "value.integer = 12;", "printf(\"integer=%d\\n\", value.integer);", "value.decimal = 2.5;", "printf(\"decimal=%.1f\\n\", value.decimal);"],
+      "integer=12\ndecimal=2.5\n",
+      "联合的所有成员复用同一块内存。每次赋值后立刻读取刚写入的成员，既体现共享存储，也避免读取非活动成员带来的歧义。"
+    ),
+    make(
+      "ex-control-goto-cleanup", "用 goto 跳到标签",
+      ["goto-cleanup"], 1,
+      "先让程序直接跳到 cleanup 标签，再打印 step 的值，看看中间那行赋值有没有被执行。",
+      ["必须有一个名为 cleanup 的标签", "必须用 goto cleanup 跳过去", "打印 step 的值"],
+      ["goto 会立刻跳到标签那一行，中间的语句被跳过", "标签后面要跟一个冒号，写法是 cleanup:"],
+      ["stdio.h"], "",
+      ["int step = 0;", "goto cleanup;", "step = 1;", "cleanup:", "printf(\"step=%d\\n\", step);"],
+      "step=0\n",
+      "goto 把执行位置直接搬到标签处，所以 step = 1 那一行根本没跑，输出还是 0。它常用来把出错分支汇合到同一个收尾标签（这就是「统一清理」的由来）。"
+    ),
+    make(
+      "ex-convert-atoi-sum", "用 atoi 转换整数",
+      ["atoi-function"], 1,
+      "使用 atoi 转换两个固定的十进制字符串，并输出两个转换结果相加后的总和。",
+      ["必须调用两次 atoi", "输入字符串必须都是合法整数", "输出格式为 sum=113"],
+      ["atoi 返回 int", "本题只使用完全合法的字符串，不讨论错误检测"],
+      ["stdio.h", "stdlib.h"], "",
+      ["int first = atoi(\"120\");", "int second = atoi(\"-7\");", "printf(\"sum=%d\\n\", first + second);"],
+      "sum=113\n",
+      "atoi 可把合法十进制文本转换为 int。它不提供可靠的错误报告，因此这里只对两个已知有效的字符串做基础练习。"
+    ),
+    make(
+      "ex-convert-atof-total", "用 atof 转换小数",
+      ["atof-function"], 1,
+      "使用 atof 转换 12.5 和 0.25 两个固定字符串，把结果相加并保留两位小数输出。",
+      ["必须调用两次 atof", "使用 double 保存结果", "输出时保留两位小数"],
+      ["atof 返回 double", "printf 输出 double 可使用 %.2f"],
+      ["stdio.h", "stdlib.h"], "",
+      ["double total = atof(\"12.5\") + atof(\"0.25\");", "printf(\"total=%.2f\\n\", total);"],
+      "total=12.75\n",
+      "atof 把合法小数字符串转换为 double。两个值都能精确得到本题结果，再用格式精度把输出固定为两位小数。"
+    ),
+    make(
+      "ex-random-repeat-seed", "固定种子复现随机数",
+      ["rand-function", "srand-function"], 2,
+      "用同一个固定种子初始化两次，每次取第一个 rand 结果，并输出两次结果是否相同。",
+      ["两次都必须调用 srand(7)", "每次播种后只调用一次 rand", "只输出相等判断，不输出平台相关随机值"],
+      ["同一实现里相同种子会重启相同序列", "比较结果可避免依赖不同平台的具体随机数"],
+      ["stdio.h", "stdlib.h"], "",
+      ["srand(7U);", "int first = rand();", "srand(7U);", "int second = rand();", "printf(\"repeat=%d\\n\", first == second);"],
+      "repeat=1\n",
+      "srand 用固定种子重置伪随机序列，因此同一实现的第一个 rand 结果会重复。只输出比较结果还能避免绑定某个运行库的数值序列。"
+    ),
+    make(
+      "ex-time-availability", "检查系统时间可用性",
+      ["time-function"], 1,
+      "调用 time(NULL) 获取当前日历时间，不输出变化的时间值，只输出调用是否成功。",
+      ["必须调用 time(NULL)", "结果保存为 time_t", "通过与 (time_t)-1 比较判断成功"],
+      ["time 的具体结果会变化，不适合直接写进预期输出", "失败时标准规定返回 (time_t)-1"],
+      ["stdio.h", "time.h"], "",
+      ["time_t now = time(NULL);", "printf(\"available=%d\\n\", now != (time_t)-1);"],
+      "available=1\n",
+      "time(NULL) 返回当前日历时间，但数值每次运行都不同。本题只检查它不是失败标记，从而保持可验证的确定输出。"
+    ),
+    make(
+      "ex-null-fallback", "NULL 指针使用默认值",
+      ["null-macro-stddef"], 1,
+      "编写一个函数：指针为 NULL 时返回默认整数，否则返回指针所指的整数。",
+      ["必须在解引用前比较 NULL", "分别测试有效指针和 NULL", "输出两个返回结果"],
+      ["NULL 表示没有可解引用的对象", "条件运算符适合表达二选一结果"],
+      ["stddef.h", "stdio.h"],
+      "static int value_or(const int *pointer, int fallback) {\n    return pointer == NULL ? fallback : *pointer;\n}",
+      ["int value = 9;", "printf(\"%d %d\\n\", value_or(&value, 0), value_or(NULL, 0));"],
+      "9 0\n",
+      "函数先检查指针是否为 NULL，只有有效地址才解引用。这样既能读取真实值，也能为缺失值提供调用者指定的默认结果。"
+    ),
+    make(
+      "ex-preprocess-include-ctype", "包含正确的头文件",
+      ["include-directive", "isdigit-function"], 1,
+      "为 isdigit 选择并包含正确的标准头文件，判断字符 7 是否是十进制数字。",
+      ["必须包含 ctype.h", "传给 isdigit 的值转换为 unsigned char", "把判断结果规范化为 0 或 1"],
+      ["isdigit 的声明位于 ctype.h", "用 != 0 把任意非零真值变成 1"],
+      ["ctype.h", "stdio.h"], "",
+      ["int digit = isdigit((unsigned char)'7') != 0;", "printf(\"digit=%d\\n\", digit);"],
+      "digit=1\n",
+      "#include 把标准库函数的正确声明带入当前翻译单元。ctype 函数应接收 EOF 或可表示为 unsigned char 的值。"
+    ),
+    make(
+      "ex-debug-assert-true", "用 assert 检查条件",
+      ["assert-macro"], 1,
+      "用 assert 检查数组元素个数确实为四，断言通过后输出确认信息。",
+      ["必须包含 assert.h", "断言表达式必须为真", "断言后输出 count=4"],
+      ["sizeof 数组除以单个元素大小可得到元素个数", "失败断言会终止程序，因此本题条件必须成立"],
+      ["assert.h", "stdio.h"], "",
+      ["int values[] = {2, 4, 6, 8};", "size_t count = sizeof values / sizeof values[0];", "assert(count == 4U);", "printf(\"count=%lu\\n\", (unsigned long)count);"],
+      "count=4\n",
+      "assert 适合在调试阶段验证程序内部前提。数组长度确实是四，所以断言不产生输出，程序继续打印确认结果。"
+    ),
+    make(
+      "ex-process-exit-handler", "exit 会立刻结束程序",
+      ["exit-function"], 1,
+      "先打印 before，然后调用 exit(0) 结束程序，看看它后面的那行还会不会执行。",
+      ["必须调用一次 exit(0)", "调用之前要打印 before", "exit 后面还要写一行打印 after 的语句作为对照"],
+      ["exit 会立刻终止程序，后面的语句不会执行", "它和 return 不同：在函数里调用 exit 也会直接结束整个程序"],
+      ["stdio.h", "stdlib.h"],
+      "",
+      ["puts(\"before\");", "exit(0);", "puts(\"after\");"],
+      "before\n",
+      "exit(0) 表示「立刻以状态 0 结束整个程序」，所以后面的 puts(\"after\") 永远不会执行——输出里只有 before。它比 return 更强势：在任何函数里调用都会直接退出。"
+    ),
+    make(
+      "ex-storage-static-counter", "静态局部变量计数",
+      ["storage-class-specifiers", "static-meanings", "scope-lifetime"], 2,
+      "用 static 局部变量保存函数调用次数，连续调用三次并输出逐次递增的结果。",
+      ["计数变量必须定义为 static 局部变量", "每次调用先递增再返回", "连续输出三次调用结果"],
+      ["static 局部变量只初始化一次", "它的作用域在函数内，但生存期贯穿整个程序"],
+      ["stdio.h"],
+      "static int next_count(void) {\n    static int count = 0;\n    count += 1;\n    return count;\n}",
+      ["int first = next_count();", "int second = next_count();", "int third = next_count();", "printf(\"%d %d %d\\n\", first, second, third);"],
+      "1 2 3\n",
+      "static 局部变量会跨调用保留值。把三次调用分别放进独立语句，既得到依次递增的结果，也避免依赖函数实参的求值顺序。"
+    ),
+    make(
+      "ex-memory-sizeof-allocation", "按对象大小动态分配",
+      ["sizeof-allocation", "malloc-function"], 2,
+      "用 malloc 为三个 int 分配空间，大小写成数量乘以 sizeof *pointer，填值后求和并释放。",
+      ["分配表达式必须使用 sizeof *values", "必须检查 malloc 返回值", "使用结束后调用 free"],
+      ["sizeof *pointer 会随指针目标类型自动调整", "成功分配后才能写入数组元素"],
+      ["stdio.h", "stdlib.h"], "",
+      ["size_t count = 3U;", "int *values = malloc(count * sizeof *values);", "if (values == NULL) { return 1; }",
+       "for (size_t i = 0; i < count; ++i) {", "    values[i] = (int)(i + 1U);", "}", "printf(\"sum=%d\\n\", values[0] + values[1] + values[2]);", "free(values);"],
+      "sum=6\n",
+      "把元素数量乘以 sizeof *values 可避免重复书写类型。检查成功后写入三个整数，使用完毕立即 free，所有权边界清晰。"
+    ),
+    make(
+      "ex-type-volatile-flag", "读取 volatile 标志",
+      ["volatile-qualifier"], 2,
+      "声明一个 volatile 整数标志，进行一次写入和一次读取，并输出最终确定值。",
+      ["变量必须带 volatile 限定", "先写入新值再读取", "输出格式为 flag=5"],
+      ["volatile 要求每次访问都实际发生", "它不提供线程同步或原子性"],
+      ["stdio.h"], "",
+      ["volatile int flag = 3;", "flag = 5;", "int snapshot = flag;", "printf(\"flag=%d\\n\", snapshot);"],
+      "flag=5\n",
+      "volatile 表达对象可能被当前代码之外的因素改变，因此读写不能被随意省略。本题只展示访问语义，不把它误当成线程同步工具。"
+    ),
+    make(
+      "ex-syntax-declare-define", "区分声明与定义",
+      ["declaration-definition"], 2,
+      "先用 extern 声明文件作用域变量，再提供一次定义和初始化，最后在 main 中输出它。",
+      ["必须同时出现 extern 声明与变量定义", "变量只能定义一次", "输出初始化后的数值"],
+      ["extern 声明告诉编译器名字和类型", "不带 extern 的文件作用域初始化语句提供存储定义"],
+      ["stdio.h"],
+      "extern int total;\nint total = 9;",
+      ["printf(\"total=%d\\n\", total);"],
+      "total=9\n",
+      "声明让后续代码知道变量的类型与名字，定义则真正提供存储。两者可以在同一翻译单元出现，但定义只能有一次。"
+    ),
+    make(
+      "ex-preprocess-include-guard", "模拟头文件保护",
+      ["include-guard"], 2,
+      "使用 ifndef、define 和 endif 组成保护结构，在其中定义常量并从 main 输出该常量。",
+      ["保护宏名必须唯一且醒目", "常量定义必须位于保护范围内", "main 中输出常量值"],
+      ["第一次处理时宏尚未定义，因此进入保护体", "再次包含同样内容时保护宏会阻止重复定义"],
+      ["stdio.h"],
+      "#ifndef CSYNTAX_SAMPLE_H\n#define CSYNTAX_SAMPLE_H\n#define CSYNTAX_LIMIT 8\n#endif",
+      ["printf(\"limit=%d\\n\", CSYNTAX_LIMIT);"],
+      "limit=8\n",
+      "头文件保护用唯一宏包住声明或定义，使同一头文件被重复包含时只展开一次。本题用常量展示保护范围确实生效。"
+    ),
+    make(
+      "ex-syntax-block-statements", "在代码块中组合语句",
+      ["statement", "compound-statement", "identifier"], 1,
+      "在一个内部复合语句中声明局部标识符并更新外层变量，离开代码块后输出结果。",
+      ["必须包含一个额外的花括号代码块", "内部变量使用合法标识符", "块外只访问外层变量"],
+      ["花括号包围的多条语句构成复合语句", "内部声明的名字离开代码块后不可见"],
+      ["stdio.h"], "",
+      ["int total = 2;", "{", "    int added_value = 5;", "    total += added_value;", "}", "printf(\"total=%d\\n\", total);"],
+      "total=7\n",
+      "复合语句建立新的块作用域，内部标识符只在花括号之间可见。对外层 total 的修改会保留到代码块结束之后。"
+    ),
+    make(
+      "ex-pointer-double-update", "通过二级指针修改值",
+      ["pointer-to-pointer"], 2,
+      "建立 int、一级指针和二级指针，通过两次解引用把原整数从 8 改为 10。",
+      ["必须声明 int ** 类型变量", "必须通过 **pointer 修改原值", "输出修改后的整数"],
+      ["一级指针保存整数地址", "二级指针保存一级指针自身的地址"],
+      ["stdio.h"], "",
+      ["int value = 8;", "int *pointer = &value;", "int **pointer_to_pointer = &pointer;", "**pointer_to_pointer += 2;", "printf(\"value=%d\\n\", value);"],
+      "value=10\n",
+      "二级指针先找到一级指针，再通过一级指针找到原整数。两次解引用写入的仍是 value 本身，因此结果变为十。"
+    ),
+    make(
+      "ex-struct-designated-init", "指定结构体成员初始化",
+      ["designated-initializer"], 1,
+      "定义含 x 与 y 的结构体，使用指定初始化器打乱书写顺序赋值，再按 x、y 顺序输出。",
+      ["必须使用 .member = value 语法", "初始化列表中先写 y 再写 x", "输出时按 x 再 y 的顺序"],
+      ["指定初始化器不依赖成员声明顺序书写", "读取结构体时仍通过点运算符选择成员"],
+      ["stdio.h"],
+      "struct Point {\n    int x;\n    int y;\n};",
+      ["struct Point point = {.y = 4, .x = 3};", "printf(\"x=%d y=%d\\n\", point.x, point.y);"],
+      "x=3 y=4\n",
+      "指定初始化器明确标出目标成员，即使赋值顺序与声明顺序不同也不会混淆。最终访问仍按成员名得到对应数值。"
+    )
+  ]);
+}());
+  </script>
+  <script data-source="data/exercises/40-more-functions.js">
+/* 补充练习：把常用但此前没有练习题的标准库函数补上。
+   约束（由 tools/verify-exercises.mjs 强制）：
+   - solution 与 starter 都必须用 -std=c11 -Wall -Wextra 零告警编译
+   - starter 里不要声明用不到的变量（会触发 -Wunused-variable）
+   - 运行时 stderr 必须为空（perror 这类函数要先把标准错误重定向到文件）
+   - 只用标准输出判定结果，不依赖交互输入，不使用 tmpfile() */
+window.C_SYNTAX_ADD_EXERCISES([
+  {
+    id: "ex-stdio-scanf-read",
+    title: "看 scanf 的返回值",
+    entryIds: ["scanf-function"],
+    difficulty: 1,
+    prompt: "写一个最长 5 行的程序：调用一次 scanf 试着读一个整数，然后把它返回的数字打印出来。",
+    requirements: ["必须调用 scanf(\"%d\", &变量) 读一个整数", "必须把 scanf 的返回值存进一个 int 变量", "必须用 printf 把返回值打印出来"],
+    hints: ["scanf 的返回值是\"成功读到的项数\"，不是读到的那个数", "练习环境没有键盘输入，scanf 会读到文件结束，返回 EOF（也就是 -1）"],
+    starter: "#include <stdio.h>\n\nint main(void) {\n    /* 定义 int value = 0; 调用 scanf，把返回值打印出来 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n\nint main(void) {\n    int value = 0;\n    int count = scanf(\"%d\", &value);\n    printf(\"count=%d\\n\", count);\n    return 0;\n}\n",
+    expectedOutput: "count=-1\n",
+    explanation: "scanf 返回的是成功读到的项数，而不是读到的数值——这一点最容易搞混。这里没有输入可读，它返回 EOF（值为 -1），同时 value 保持原来的 0。学会看返回值，就知道该不该相信读进来的数据。"
+  },
+  {
+    id: "ex-stdio-snprintf-truncate",
+    title: "snprintf 的有界格式化",
+    entryIds: ["snprintf-function"],
+    difficulty: 1,
+    prompt: "用 snprintf 把 value 和 42 格式化成 value-42 写进缓冲区，输出文本，并输出它返回的\"本应写入长度\"。",
+    requirements: ["必须用 snprintf 并且把缓冲区大小传进去", "必须把返回值保存下来并输出", "输出格式为 text=... 与 needed=..."],
+    hints: ["snprintf 第二个参数是缓冲区总大小，包含结尾的空字符", "返回值是\"假如空间足够会写入多少个字符\"，不包含空字符"],
+    starter: "#include <stdio.h>\n\nint main(void) {\n    /* 用 snprintf 写入 value-42，并输出文本与它返回的长度 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n\nint main(void) {\n    char buffer[32];\n    int needed = snprintf(buffer, sizeof buffer, \"%s-%d\", \"value\", 42);\n    printf(\"text=%s\\nneeded=%d\\n\", buffer, needed);\n    return 0;\n}\n",
+    expectedOutput: "text=value-42\nneeded=8\n",
+    explanation: "\"value-42\" 一共 8 个字符，snprintf 把它完整写进缓冲区，并返回 8（不含结尾空字符）。返回值的用途是判断有没有被截断：只要返回值大于等于缓冲区大小，就说明内容被砍掉过；而老版本 MSVCRT 的 snprintf 在截断时不保证补终止符，所以工程里宁可把缓冲区开足再靠返回值判断。"
+  },
+  {
+    id: "ex-stdio-remove-file",
+    title: "remove 删除文件并验证结果",
+    entryIds: ["remove-function"],
+    difficulty: 1,
+    prompt: "先写一个临时文件，确认它能被打开；再用 remove 删掉它，确认之后打不开了。",
+    requirements: ["必须先用写方式创建文件", "必须调用 remove 并在返回值里确认删除成功", "输出删除前后的可打开状态"],
+    hints: ["文件不存在时 fopen 返回 NULL，可以借此判断文件还在不在", "remove 返回 0 表示删除成功"],
+    starter: "#include <stdio.h>\n\nint main(void) {\n    /* 创建文件 -> 确认存在 -> remove -> 确认消失 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n\nint main(void) {\n    const char *path = \"exercise-remove-demo.txt\";\n    FILE *file = fopen(path, \"w\");\n    fputs(\"hello\\n\", file);\n    fclose(file);\n\n    FILE *before = fopen(path, \"r\");\n    printf(\"before=%d\\n\", before != NULL);\n    if (before != NULL) fclose(before);\n\n    int removed = remove(path);\n    FILE *after = fopen(path, \"r\");\n    printf(\"after=%d removed=%d\\n\", after != NULL, removed == 0);\n    if (after != NULL) fclose(after);\n    return 0;\n}\n",
+    expectedOutput: "before=1\nafter=0 removed=1\n",
+    explanation: "remove 既能删除文件也能删除空目录，成功返回 0。删除前文件可以打开，删除后 fopen 只能返回 NULL，这就是删除生效的直接证据。"
+  },
+  {
+    id: "ex-stdio-rename-file",
+    title: "rename 改名后内容还在",
+    entryIds: ["rename-function"],
+    difficulty: 1,
+    prompt: "创建文件写入一个整数，用 rename 换个名字，然后确认旧名字打不开、新名字能读出原来的整数。",
+    requirements: ["必须先创建文件并写入 42", "必须调用 rename 完成改名", "要读出改名后文件里的整数并输出"],
+    hints: ["改名之后同一个文件换了个路径，内容不会变", "用 fscanf 读回整数，检查返回值可以确认读取成功"],
+    starter: "#include <stdio.h>\n\nint main(void) {\n    /* 写文件 -> rename -> 旧名打不开 / 新名能读到 42 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n\nint main(void) {\n    const char *from = \"exercise-rename-src.txt\";\n    const char *to = \"exercise-rename-dst.txt\";\n\n    FILE *file = fopen(from, \"w\");\n    fputs(\"42\\n\", file);\n    fclose(file);\n\n    int moved = rename(from, to);\n    FILE *oldName = fopen(from, \"r\");\n    FILE *newName = fopen(to, \"r\");\n    int value = 0;\n    if (newName != NULL) fscanf(newName, \"%d\", &value);\n    printf(\"moved=%d src_gone=%d value=%d\\n\", moved == 0, oldName == NULL, value);\n    if (oldName != NULL) fclose(oldName);\n    if (newName != NULL) fclose(newName);\n\n    remove(to);\n    return 0;\n}\n",
+    expectedOutput: "moved=1 src_gone=1 value=42\n",
+    explanation: "rename 在同一目录内改的是文件名，文件内容和句柄语义都不受影响；改名后旧路径立刻失效，新路径可以正常打开并读回原来的数据。"
+  },
+  {
+    id: "ex-string-strncat-limit",
+    title: "strncat 只拼接指定个数",
+    entryIds: ["strncat-function"],
+    difficulty: 1,
+    prompt: "缓冲区里已有 abc，用 strncat 最多再拼接 3 个字符，然后输出结果和长度。",
+    requirements: ["必须使用 strncat", "拼接的长度参数必须是 3", "输出拼接后的字符串和它的长度"],
+    hints: ["strncat 的第三个参数是最多追加多少个字符", "追加完成后会自动补上结尾的空字符"],
+    starter: "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    /* 准备一个内容为 abc 的缓冲区，最多再追加 3 个字符 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    char buffer[12] = \"abc\";\n    strncat(buffer, \"defghij\", 3);\n    printf(\"text=%s len=%d\\n\", buffer, (int)strlen(buffer));\n    return 0;\n}\n",
+    expectedOutput: "text=abcdef len=6\n",
+    explanation: "strncat 最多从源字符串拿走指定数量的字符，所以 defghij 只贡献了 def；它与 strcat 的区别正是这个上限，可以让\"目标缓冲区够不够大\"变成可计算的。"
+  },
+  {
+    id: "ex-string-strncmp-prefix",
+    title: "strncmp 只比前几个字符",
+    entryIds: ["strncmp-function"],
+    difficulty: 1,
+    prompt: "用 strncmp 比较 config.h 与 config.c 的前 3 个字符，看看它们是不是相同。",
+    requirements: ["必须调用 strncmp 一次", "比较长度写 3", "用 printf 打印比较结果是否相等"],
+    hints: ["strncmp 相等时返回 0，所以可以写成 strncmp(左, 右, 3) == 0", "它最多看指定数量的字符，后面的不同不会影响结果"],
+    starter: "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    /* 比较 config.h 与 config.c 的前 3 个字符 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    const char *left = \"config.h\";\n    const char *right = \"config.c\";\n    printf(\"prefix_same=%d\\n\", strncmp(left, right, 3) == 0);\n    return 0;\n}\n",
+    expectedOutput: "prefix_same=1\n",
+    explanation: "strncmp 只看指定数量的字符，con 这一段两边一样，所以返回 0（相等）；如果换成 strcmp 比整串，h 与 c 不同就会判定不相等。判断「是不是以某个前缀开头」用它最合适。"
+  },
+  {
+    id: "ex-stdlib-strtod-endptr",
+    title: "strtod 解析数字并报告停在哪",
+    entryIds: ["strtod-function"],
+    difficulty: 2,
+    prompt: "用 strtod 从 \"3.5kg\" 里取出数字，并借助 endptr 指出剩余没被解析的部分。",
+    requirements: ["必须使用 strtod 并传入 endptr", "必须输出解析出的数值与剩余字符串", "数值按一位小数输出"],
+    hints: ["endptr 指向第一个没有被当作数字的字符", "剩余字符串就是 endptr 指向的位置"],
+    starter: "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void) {\n    /* 从 \"3.5kg\" 里解析数字，并把剩余部分也打印出来 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void) {\n    const char *text = \"3.5kg\";\n    char *end = NULL;\n    double value = strtod(text, &end);\n    printf(\"value=%.1f rest=%s\\n\", value, end);\n    return 0;\n}\n",
+    expectedOutput: "value=3.5 rest=kg\n",
+    explanation: "strtod 尽量向前读取合法数字，停在第一个不可能是数字的字符上，并通过 endptr 把这个位置交回给调用者；比起 atof，它能明确区分\"解析成功\"和\"后面还有垃圾字符\"。"
+  },
+  {
+    id: "ex-string-memmove-overlap",
+    title: "memmove 处理重叠区间",
+    entryIds: ["memmove-function"],
+    difficulty: 2,
+    prompt: "把数组中的前 4 个字符整体右移 2 个位置（源与目标重叠），用 memmove 完成搬运后输出结果。",
+    requirements: ["必须使用 memmove 而不是 memcpy", "搬运长度必须是 4 个字符", "输出搬运后的字符串"],
+    hints: ["重叠区域一定要用 memmove，它会先判断方向再拷贝", "可以先用一个长度足够的数组保证目标区域合法"],
+    starter: "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    /* 准备内容为 ABCDE 的数组，把前 4 个字符搬到下标 2 开始的位置 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    char text[16] = \"ABCDE\";\n    memmove(text + 2, text, 4);\n    printf(\"text=%s\\n\", text);\n    return 0;\n}\n",
+    expectedOutput: "text=ABABCD\n",
+    explanation: "源区间 [0,4) 与目标区间 [2,6) 有重叠，memcpy 在这种情况下行为未定义，而 memmove 会按方向安全搬运：最终前 6 个字符变成 ABABCD。"
+  },
+  {
+    id: "ex-string-memcmp-padding",
+    title: "memcmp 连填充字节一起比",
+    entryIds: ["memcmp-function"],
+    difficulty: 2,
+    prompt: "准备两个前 3 个字符相同、但后续字节不同的缓冲区，用 memcmp 分别只比前 3 字节和比满 6 字节。",
+    requirements: ["必须使用 memcmp 做两次长度不同的比较", "第一次长度 3、第二次长度 6", "输出两次比较是否相等"],
+    hints: ["memcmp 按字节比较，不管内容是不是可打印字符", "只比前 3 字节时后面的差异不会被看到"],
+    starter: "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    /* 两个 6 字节缓冲区：前 3 字节同为 abc，后面不同 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    char left[6] = { 'a', 'b', 'c', 0, 0, 0 };\n    char right[6] = { 'a', 'b', 'c', 1, 2, 3 };\n    printf(\"first3_same=%d all6_same=%d\\n\", memcmp(left, right, 3) == 0, memcmp(left, right, 6) == 0);\n    return 0;\n}\n",
+    expectedOutput: "first3_same=1 all6_same=0\n",
+    explanation: "memcmp 是纯字节比较，长度由调用者决定：只比 3 个字节时两个缓冲区看起来一样，比满 6 个字节就会在第 4 个字节（0 与 1）分出胜负。这也是为什么结构体比较要小心填充字节。"
+  },
+  {
+    id: "ex-stdlib-atol-trailing",
+    title: "atol 遇到非数字会停下",
+    entryIds: ["atol-function", "atoi-function"],
+    difficulty: 1,
+    prompt: "用 atol 解析 \"123abc\"，用 atoi 解析 \"456xyz\"，看看它们各自得到什么值。",
+    requirements: ["必须使用 atol 与 atoi 各一次", "两个字符串都要带结尾的非数字字符", "两个结果都要输出"],
+    hints: ["atol 返回 long，atoi 返回 int，打印时分别用 %ld 与 %d", "遇到不能构成数字的字符就停止，前面的数字照样返回"],
+    starter: "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void) {\n    /* 分别解析 \"123abc\" 与 \"456xyz\" */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void) {\n    long first = atol(\"123abc\");\n    int second = atoi(\"456xyz\");\n    printf(\"first=%ld second=%d\\n\", first, second);\n    return 0;\n}\n",
+    expectedOutput: "first=123 second=456\n",
+    explanation: "atol 读到 a 就停下，返回已经读到的 123；它没有错误反馈通道，所以需要区分\"解析失败\"和\"值为 0\"时应当改用 strtol 并检查 endptr 与 errno。"
+  },
+  {
+    id: "ex-stdlib-labs-value",
+    title: "labs 求长整型绝对值",
+    entryIds: ["labs-function"],
+    difficulty: 1,
+    prompt: "分别对负数和正数调用 labs，输出两个绝对值，并注意 long 类型要用 %ld 打印。",
+    requirements: ["必须使用 labs", "至少要处理一个负数", "必须用 %ld 输出 long 类型"],
+    hints: ["labs 接收并返回 long", "打印 long 要用 %ld，不能再用 %d"],
+    starter: "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void) {\n    /* 求 -1234567890 与 42 的绝对值 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void) {\n    long negative = -1234567890L;\n    printf(\"abs=%ld same=%ld\\n\", labs(negative), labs(42L));\n    return 0;\n}\n",
+    expectedOutput: "abs=1234567890 same=42\n",
+    explanation: "labs 是 abs 的长整型版本，参数和返回值都是 long，配合 %ld 使用；如果混用 int 版本，超出 int 范围的数值就会被截断。"
+  },
+  {
+    id: "ex-math-round-family",
+    title: "取整与绝对值三件套",
+    entryIds: ["fabs-function", "floor-function", "ceil-function"],
+    difficulty: 1,
+    prompt: "对 -3.7 分别求绝对值、向下取整和向上取整，看看三个结果差在哪。",
+    requirements: ["必须分别使用 fabs / floor / ceil", "三个结果都要输出", "每个结果保留一位小数"],
+    hints: ["floor 朝负无穷方向取整，ceil 朝正无穷方向", "返回类型都是 double，打印出来仍带小数位"],
+    starter: "#include <stdio.h>\n#include <math.h>\n\nint main(void) {\n    /* 对 -3.7 分别求 fabs / floor / ceil */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <math.h>\n\nint main(void) {\n    double value = -3.7;\n    printf(\"fabs=%.1f floor=%.1f ceil=%.1f\\n\", fabs(value), floor(value), ceil(value));\n    return 0;\n}\n",
+    expectedOutput: "fabs=3.7 floor=-4.0 ceil=-3.0\n",
+    explanation: "绝对值把符号去掉；floor 取不大于它的最大整数（-4）；ceil 取不小于它的最小整数（-3）。三者都返回 double，所以打印出来仍带一位小数。"
+  },
+  {
+    id: "ex-math-round-nearest",
+    title: "round 的四舍五入",
+    entryIds: ["round-function", "floor-function"],
+    difficulty: 1,
+    prompt: "把 2.5 与 -2.5 分别交给 round 和 floor，观察四舍五入与向下取整在 .5 处为什么不同。",
+    requirements: ["必须使用 round 与 floor 各两次", "四个结果都要输出", "每个结果保留一位小数"],
+    hints: ["round 取最接近的整数，正好在中间时远离零", "floor 永远朝负无穷方向，所以 -2.5 会变成 -3"],
+    starter: "#include <stdio.h>\n#include <math.h>\n\nint main(void) {\n    /* 对 2.5 与 -2.5 各算一次 round 与 floor */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <math.h>\n\nint main(void) {\n    printf(\"round_pos=%.1f floor_pos=%.1f\\n\", round(2.5), floor(2.5));\n    printf(\"round_neg=%.1f floor_neg=%.1f\\n\", round(-2.5), floor(-2.5));\n    return 0;\n}\n",
+    expectedOutput: "round_pos=3.0 floor_pos=2.0\nround_neg=-3.0 floor_neg=-3.0\n",
+    explanation: "round 在 .5 处远离零：2.5 变 3、-2.5 变 -3；floor 只看方向：2.5 变 2，而 -2.5 也变 -3。两者在负数区间重合、在正数区间分道扬镳，这是取整函数最容易记混的地方。"
+  },
+  {
+    id: "ex-math-fmod-remainder",
+    title: "fmod 的小数余数",
+    entryIds: ["fmod-function"],
+    difficulty: 1,
+    prompt: "用 fmod 计算 7.5 除以 2.0 的余数，并和整数取余做对比。",
+    requirements: ["必须使用 fmod", "还要用 % 运算符算一次整数取余作对照", "两种余数都要输出"],
+    hints: ["% 只能用于整数，浮点数要用 fmod", "fmod 的结果符号与被除数一致"],
+    starter: "#include <stdio.h>\n#include <math.h>\n\nint main(void) {\n    /* fmod(7.5, 2.0) 与 7 % 2 各算一次 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <math.h>\n\nint main(void) {\n    printf(\"fmod=%.1f int=%d\\n\", fmod(7.5, 2.0), 7 % 2);\n    return 0;\n}\n",
+    expectedOutput: "fmod=1.5 int=1\n",
+    explanation: "整数的 % 要求两边都是整型，浮点数必须用 fmod；7.5 减去 3 个 2.0 剩 1.5，而 7 减去 3 个 2 剩 1，两者语义一致只是类型不同。"
+  },
+  {
+    id: "ex-math-trig-basics",
+    title: "三角函数的一组固定值",
+    entryIds: ["sin-function", "cos-function", "tan-function"],
+    difficulty: 1,
+    prompt: "用 sin / cos / tan 计算 0 与 π/2 处的值，保留 3 位小数输出。",
+    requirements: ["必须使用 sin / cos / tan", "π 用字面量 3.14159265358979323846 参与计算", "结果保留 3 位小数"],
+    hints: ["sin(0)=0、cos(0)=1、tan(0)=0", "π/2 处 cos 为 0、sin 为 1"],
+    starter: "#include <stdio.h>\n#include <math.h>\n\nint main(void) {\n    /* 用字面量表示 π，算 0 与 π/2 处的 sin/cos/tan */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <math.h>\n\nint main(void) {\n    const double pi = 3.14159265358979323846;\n    printf(\"sin0=%.3f cos0=%.3f tan0=%.3f\\n\", sin(0.0), cos(0.0), tan(0.0));\n    printf(\"sinHalf=%.3f cosHalf=%.3f\\n\", sin(pi / 2.0), cos(pi / 2.0));\n    return 0;\n}\n",
+    expectedOutput: "sin0=0.000 cos0=1.000 tan0=0.000\nsinHalf=1.000 cosHalf=0.000\n",
+    explanation: "三角函数接收弧度而不是角度：0 处 sin 与 tan 为 0、cos 为 1；π/2 处正好反过来。cos(π/2) 在实际计算中是极小的数，保留 3 位小数后显示为 0.000。"
+  },
+  {
+    id: "ex-math-log-exp",
+    title: "log 与 exp 互为逆运算",
+    entryIds: ["log-function", "exp-function"],
+    difficulty: 1,
+    prompt: "验证 log(1)=0、exp(0)=1，并用 exp(log(5)) 走一圈回到 5。",
+    requirements: ["必须使用 log 与 exp", "必须输出 exp(log(5.0)) 的结果", "所有结果保留 4 位小数"],
+    hints: ["log 是自然对数（以 e 为底）", "exp 是 e 的幂，两者互为逆运算"],
+    starter: "#include <stdio.h>\n#include <math.h>\n\nint main(void) {\n    /* 输出 log(1.0)、exp(0.0)、exp(log(5.0)) */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <math.h>\n\nint main(void) {\n    printf(\"log1=%.4f exp0=%.4f roundtrip=%.4f\\n\", log(1.0), exp(0.0), exp(log(5.0)));\n    return 0;\n}\n",
+    expectedOutput: "log1=0.0000 exp0=1.0000 roundtrip=5.0000\n",
+    explanation: "以 e 为底的对数在 1 处为 0，指数函数在 0 处为 1；先取对数再取指数会把数值还原，这条往返关系常用于把乘法变成加法的数值计算。"
+  },
+  {
+    id: "ex-time-clock-difftime",
+    title: "clock 与 difftime",
+    entryIds: ["clock-function", "difftime-function"],
+    difficulty: 1,
+    prompt: "连续调用两次 clock（一次记开始、一次记结束）并相减，再用 difftime 算出相差 60 秒的两个时间点的差值。",
+    requirements: ["必须调用 clock 两次并相减", "必须除以 CLOCKS_PER_SEC 换算成秒", "必须用 difftime 计算时间差"],
+    hints: ["clock 返回的是处理器时间，不是墙上时间", "difftime 接收两个 time_t，返回秒数"],
+    starter: "#include <stdio.h>\n#include <time.h>\n\nint main(void) {\n    /* clock 调用两次相减；用 difftime 算出 60 秒的差 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <time.h>\n\nint main(void) {\n    clock_t start = clock();\n    clock_t end = clock();\n    double seconds = (double)(end - start) / CLOCKS_PER_SEC;\n\n    time_t first = time(NULL);\n    time_t second = first + 60;\n    printf(\"nonneg=%d diff=%.0f\\n\", seconds >= 0.0, difftime(second, first));\n    return 0;\n}\n",
+    expectedOutput: "nonneg=1 diff=60\n",
+    explanation: "clock 给出进程消耗的处理器时间，两次调用相减再除以 CLOCKS_PER_SEC 就是这段代码花掉的秒数（这里两行紧挨着，所以是 0）；difftime 专门算两个 time_t 之间相差多少秒。这里只输出「非负」这种确定结论，不把具体耗时写进答案。"
+  },
+  {
+    id: "ex-time-mktime-localtime",
+    title: "mktime 与 localtime",
+    entryIds: ["mktime-function", "localtime-function"],
+    difficulty: 2,
+    prompt: "手工填好一个 struct tm，用 mktime 换成时间戳，再用 localtime 换回来，确认字段一一对应。",
+    requirements: ["必须设置年、月、日、时、分、秒六个字段", "必须用 mktime 得到 time_t", "必须用 localtime 取回并打印还原后的六个字段"],
+    hints: ["tm_year 是从 1900 年起的偏移，tm_mon 从 0 开始", "tm_isdst 给 -1 表示让库自己判断夏令时"],
+    starter: "#include <stdio.h>\n#include <time.h>\n\nint main(void) {\n    /* 填 2024-01-02 03:04:05，用 mktime 与 localtime 往返一次 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <time.h>\n\nint main(void) {\n    struct tm parts = { 0 };\n    parts.tm_year = 2024 - 1900;\n    parts.tm_mon = 0;\n    parts.tm_mday = 2;\n    parts.tm_hour = 3;\n    parts.tm_min = 4;\n    parts.tm_sec = 5;\n    parts.tm_isdst = -1;\n\n    time_t stamp = mktime(&parts);\n    struct tm *back = localtime(&stamp);\n    printf(\"stamp_ok=%d roundtrip=%d-%02d-%02d %02d:%02d:%02d\\n\",\n           stamp != (time_t)-1,\n           back->tm_year + 1900, back->tm_mon + 1, back->tm_mday,\n           back->tm_hour, back->tm_min, back->tm_sec);\n    return 0;\n}\n",
+    expectedOutput: "stamp_ok=1 roundtrip=2024-01-02 03:04:05\n",
+    explanation: "mktime 把\"人看的日历字段\"换算成时间戳，localtime 再换回来；因为走的是本地时区往返，打印出的字段与输入一致，程序不需要假设自己运行在哪个时区。"
+  },
+  {
+    id: "ex-time-strftime-format",
+    title: "strftime 格式化时间字段",
+    entryIds: ["strftime-function"],
+    difficulty: 1,
+    prompt: "直接构造一个 struct tm，用 strftime 按 \"%Y-%m-%d %H:%M:%S\" 排版，并报告写入了多少个字符。",
+    requirements: ["必须使用 strftime 且传入缓冲区大小", "格式串必须是 %Y-%m-%d %H:%M:%S", "要输出写入长度与结果文本"],
+    hints: ["strftime 返回写入的字符数（不含结尾空字符）", "月从 0 开始，所以 5 表示五月"],
+    starter: "#include <stdio.h>\n#include <time.h>\n\nint main(void) {\n    /* 填 2024-05-06 07:08:09，按 %Y-%m-%d %H:%M:%S 排版 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <time.h>\n\nint main(void) {\n    struct tm parts = { 0 };\n    parts.tm_year = 2024 - 1900;\n    parts.tm_mon = 4;\n    parts.tm_mday = 6;\n    parts.tm_hour = 7;\n    parts.tm_min = 8;\n    parts.tm_sec = 9;\n\n    char text[32];\n    size_t written = strftime(text, sizeof text, \"%Y-%m-%d %H:%M:%S\", &parts);\n    printf(\"written=%d text=%s\\n\", (int)written, text);\n    return 0;\n}\n",
+    expectedOutput: "written=19 text=2024-05-06 07:08:09\n",
+    explanation: "strftime 把 struct tm 按格式串排版到字符缓冲区，返回写入的字符数，缓冲区不够时返回 0，所以一定要把大小传进去并检查返回值。"
+  },
+  {
+    id: "ex-stdlib-atexit-order",
+    title: "atexit 注册的清理函数最后执行",
+    entryIds: ["atexit-function"],
+    difficulty: 1,
+    prompt: "注册一个清理函数，观察它和 main 里的输出谁先出现。",
+    requirements: ["必须用 atexit 注册清理函数", "清理函数里要输出 cleanup", "main 里输出 main"],
+    hints: ["atexit 注册的函数在程序正常结束时才被调用", "多个清理函数的执行顺序与注册顺序相反"],
+    starter: "#include <stdio.h>\n#include <stdlib.h>\n\nstatic void cleanup(void) {\n    /* 输出 cleanup */\n}\n\nint main(void) {\n    /* 注册 cleanup，然后输出 main */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <stdlib.h>\n\nstatic void cleanup(void) {\n    printf(\"cleanup\\n\");\n}\n\nint main(void) {\n    atexit(cleanup);\n    printf(\"main\\n\");\n    return 0;\n}\n",
+    expectedOutput: "main\ncleanup\n",
+    explanation: "atexit 把函数登记到退出队列，main 返回后运行时才依次调用它们（后注册的先执行），因此输出顺序是 main 在前、cleanup 在后。适合集中释放资源。"
+  },
+  {
+    id: "ex-stdlib-getenv-lookup",
+    title: "getenv 查环境变量",
+    entryIds: ["getenv-function"],
+    difficulty: 1,
+    prompt: "用一个肯定不会存在的变量名调用 getenv，确认返回空指针；再说明为什么必须判空。",
+    requirements: ["必须使用 getenv", "变量名要用 C_SYNTAX_EXERCISE_MISSING_VAR", "输出它是否为空指针"],
+    hints: ["变量不存在时 getenv 返回 NULL", "解引用空指针会导致程序崩溃，所以拿到结果必须先判断"],
+    starter: "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void) {\n    /* 查询环境变量 C_SYNTAX_EXERCISE_MISSING_VAR */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void) {\n    const char *value = getenv(\"C_SYNTAX_EXERCISE_MISSING_VAR\");\n    printf(\"missing=%d\\n\", value == NULL);\n    return 0;\n}\n",
+    expectedOutput: "missing=1\n",
+    explanation: "getenv 只在环境变量存在时返回指向其值的指针，否则返回 NULL；读到的字符串属于运行时管理的内存，不能修改也不该保存太久。"
+  },
+  {
+    id: "ex-stdlib-system-status",
+    title: "system 的返回值表示什么",
+    entryIds: ["system-function"],
+    difficulty: 1,
+    prompt: "用 system 执行一条必然成功的命令，并把它的返回值翻译成\"是否成功\"。",
+    requirements: ["必须使用 system 执行 exit 0", "要输出返回值是否为 0", "不要依赖命令的具体输出"],
+    hints: ["system 会调用命令解释器执行字符串，返回值来自被执行的命令", "命令以状态 0 结束时表示成功"],
+    starter: "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void) {\n    /* 执行 \"exit 0\" 并判断返回值 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void) {\n    int status = system(\"exit 0\");\n    printf(\"ok=%d\\n\", status == 0);\n    return 0;\n}\n",
+    expectedOutput: "ok=1\n",
+    explanation: "system 把字符串交给命令解释器执行并返回它的结束状态；这里命令就是\"以 0 退出\"，所以返回 0。真实项目里要谨慎使用 system，因为它依赖外部环境且容易被注入。"
+  }
+]);
+  </script>
+  <script data-source="data/exercises/50-wengkai.js">
+/* 翁恺风格经典题（参考浙大翁恺《程序设计入门——C 语言》的课后练习题型）
+   特点：题目短（8~15 行）、只考一个点、输入输出格式写清楚，
+   只用最基础的函数（printf 与整数运算/循环/判断，最多一个自制小函数），
+   不涉及文件、动态内存、可变参数等进阶内容。 */
+window.C_SYNTAX_ADD_EXERCISES([
+  {
+    id: "ex-wk-temperature",
+    title: "华氏温度转摄氏",
+    entryIds: ["integer-division", "arithmetic-operators"],
+    difficulty: 1,
+    prompt: "已知华氏温度 fahr = 150，按公式 celsius = 5 × (fahr − 32) ÷ 9 算出摄氏温度（整数），按 fahr=150 celsius=65 的格式输出。",
+    requirements: ["必须用整数运算完成计算", "必须先减 32 再乘 5 最后除以 9", "必须按 fahr=... celsius=... 的格式输出一行"],
+    hints: ["公式里先算 fahr - 32，再乘 5，最后除以 9", "整数除法会直接丢掉小数部分，这里正好要整数结果"],
+    starter: "#include <stdio.h>\n\nint main(void) {\n    /* 算出 150 华氏度对应的摄氏温度并输出 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n\nint main(void) {\n    int fahr = 150;\n    int celsius = 5 * (fahr - 32) / 9;\n    printf(\"fahr=%d celsius=%d\\n\", fahr, celsius);\n    return 0;\n}\n",
+    expectedOutput: "fahr=150 celsius=65\n",
+    explanation: "先减 32 再乘 5、最后除以 9，除号两边都是整数，所以结果自动取整：5 × 118 ÷ 9 = 65。这就是最常见的一道入门题，练的是整数运算顺序和整数除法的特点。"
+  },
+  {
+    id: "ex-wk-reverse-three",
+    title: "逆序输出三位数",
+    entryIds: ["integer-division", "arithmetic-operators"],
+    difficulty: 1,
+    prompt: "把三位整数 123 逆序输出成 321（只输出这一行数字）。",
+    requirements: ["必须用 % 和 / 取出个位、十位、百位", "必须用一次 printf 打印三个数字", "必须只输出 321 这一行"],
+    hints: ["x % 10 得到个位", "x / 10 % 10 得到十位，x / 100 得到百位"],
+    starter: "#include <stdio.h>\n\nint main(void) {\n    /* 取出 123 的三位数字并倒着输出 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n\nint main(void) {\n    int x = 123;\n    printf(\"%d%d%d\\n\", x % 10, x / 10 % 10, x / 100);\n    return 0;\n}\n",
+    expectedOutput: "321\n",
+    explanation: "取余得到低位、整除去掉低位，是拆分整数的两把钥匙：123 % 10 = 3，123 / 10 % 10 = 2，123 / 100 = 1，按 3、2、1 的顺序打印就是逆序。"
+  },
+  {
+    id: "ex-wk-count-digits",
+    title: "数一数有几位",
+    entryIds: ["while-loop", "integer-division"],
+    difficulty: 1,
+    prompt: "用循环数出整数 352 一共有几位数字，按 digits=3 的格式输出。",
+    requirements: ["必须用 while 循环", "循环里用除以 10 的方式去掉最后一位", "输出 digits=位数"],
+    hints: ["每次 x = x / 10 就少一位，数到 x 变成 0 为止", "记得准备一个计数器从 0 开始"],
+    starter: "#include <stdio.h>\n\nint main(void) {\n    /* 数出 352 有几位 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n\nint main(void) {\n    int x = 352;\n    int count = 0;\n    while (x > 0) {\n        x = x / 10;\n        count = count + 1;\n    }\n    printf(\"digits=%d\\n\", count);\n    return 0;\n}\n",
+    expectedOutput: "digits=3\n",
+    explanation: "352 → 35 → 3 → 0，每除一次 10 就去掉一位，循环三次后 x 变成 0，计数器刚好是 3。这是「用循环处理数字」最典型的起手式。"
+  },
+  {
+    id: "ex-wk-odd-even-count",
+    title: "数奇数和偶数个数",
+    entryIds: ["if-statement", "arithmetic-operators"],
+    difficulty: 1,
+    prompt: "数组里放着 1、2、3、4 四个整数，数出其中奇数与偶数各有几个，按 odd=2 even=2 输出。",
+    requirements: ["必须用循环遍历数组", "必须用取余判断奇偶", "按 odd=... even=... 输出"],
+    hints: ["x % 2 等于 1 是奇数，等于 0 是偶数", "准备两个计数器分别累加"],
+    starter: "#include <stdio.h>\n\nint main(void) {\n    /* 先声明数组 values[4] 并填入 1、2、3、4，再数出奇数与偶数各几个 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n\nint main(void) {\n    int values[4] = { 1, 2, 3, 4 };\n    int odd = 0;\n    int even = 0;\n    for (int i = 0; i < 4; i++) {\n        if (values[i] % 2 == 1) {\n            odd = odd + 1;\n        } else {\n            even = even + 1;\n        }\n    }\n    printf(\"odd=%d even=%d\\n\", odd, even);\n    return 0;\n}\n",
+    expectedOutput: "odd=2 even=2\n",
+    explanation: "取余 2 判断奇偶是固定套路：余 1 为奇、余 0 为偶。循环配合两个计数器，把「分类统计」这件事一次做完。"
+  },
+  {
+    id: "ex-wk-leap-year",
+    title: "判断闰年",
+    entryIds: ["logical-operators", "relational-operators"],
+    difficulty: 1,
+    prompt: "判断 2024 年是不是闰年：能被 4 整除且不能被 100 整除，或者能被 400 整除。按 leap=1 输出（是闰年输出 1，否则输出 0）。",
+    requirements: ["必须用一个逻辑表达式完成判断", "必须同时用到 && 与 ||", "输出 leap=0 或 leap=1"],
+    hints: ["先写 (year % 4 == 0 && year % 100 != 0)", "再用 || 把「能被 400 整除」接在后面"],
+    starter: "#include <stdio.h>\n\nint main(void) {\n    /* 先声明 int year = 2024; 再用逻辑表达式判断它是不是闰年 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n\nint main(void) {\n    int year = 2024;\n    int leap = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;\n    printf(\"leap=%d\\n\", leap);\n    return 0;\n}\n",
+    expectedOutput: "leap=1\n",
+    explanation: "2024 能被 4 整除且不能被 100 整除，所以是闰年，判断结果是 1。把判断结果存进 int 再打印，是 C 语言里表示真假（0/1）的常规写法。"
+  },
+  {
+    id: "ex-wk-decompose-forward",
+    title: "正序分解整数",
+    entryIds: ["for-loop", "integer-division"],
+    difficulty: 2,
+    prompt: "把 3721 从高位到低位逐位输出，数字之间用空格隔开，最后换行（结果形如 3 7 2 1）。",
+    requirements: ["必须用 for 循环", "必须先取高位再逐位降低权重", "数字之间用空格分隔，末尾换行"],
+    hints: ["从 1000 开始，每次除以 10 就下移一位", "x / mask % 10 可以取出当前这一位"],
+    starter: "#include <stdio.h>\n\nint main(void) {\n    /* 先声明 int x = 3721; 再从千位开始逐位输出 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n\nint main(void) {\n    int x = 3721;\n    for (int mask = 1000; mask > 0; mask = mask / 10) {\n        printf(\"%d\", x / mask % 10);\n        if (mask > 1) {\n            printf(\" \");\n        }\n    }\n    printf(\"\\n\");\n    return 0;\n}\n",
+    expectedOutput: "3 7 2 1\n",
+    explanation: "先用 mask 把要取的那一位「抬」到个位（x / mask），再用 % 10 取出来；mask 从 1000 一路降到 1，就按高位到低位输出完。和逆序题相对，练的是正序拆分。"
+  },
+  {
+    id: "ex-wk-series-sum",
+    title: "求序列前五项和",
+    entryIds: ["for-loop", "explicit-cast"],
+    difficulty: 2,
+    prompt: "计算 1 + 1/2 + 1/3 + 1/4 + 1/5，保留两位小数输出，形如 sum=2.28。",
+    requirements: ["必须用 for 循环累加", "必须让 1/i 按小数计算（不能全是整数除法）", "输出保留两位小数"],
+    hints: ["写成 1.0 / i 就会按小数算", "sum 用 double，printf 用 %.2f"],
+    starter: "#include <stdio.h>\n\nint main(void) {\n    /* 累加 1 + 1/2 + ... + 1/5 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n\nint main(void) {\n    double sum = 0.0;\n    for (int i = 1; i <= 5; i++) {\n        sum = sum + 1.0 / i;\n    }\n    printf(\"sum=%.2f\\n\", sum);\n    return 0;\n}\n",
+    expectedOutput: "sum=2.28\n",
+    explanation: "关键在 1.0 / i：只要有一个操作数是小数，除法就按小数算，否则 1/2 会得 0。累加结果约 2.2833，保留两位小数是 2.28。"
+  },
+  {
+    id: "ex-wk-read-digits",
+    title: "念出每位数字",
+    entryIds: ["switch-statement", "while-loop"],
+    difficulty: 2,
+    prompt: "把 25 的每一位用拼音念出来（2 念 er、5 念 wu），形如 er wu。",
+    requirements: ["必须用 switch 把数字映射成拼音", "必须先用循环把各位拆出来", "两位之间用空格分隔"],
+    hints: ["x / 10 是十位，x % 10 是个位", "switch 的每个 case 后面记得 break"],
+    starter: "#include <stdio.h>\n\nint main(void) {\n    /* 先声明 int x = 25; 再把十位和个位分别念出来 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n\nint main(void) {\n    int digits[4];\n    int count = 0;\n    int x = 25;\n    while (x > 0) {\n        digits[count] = x % 10;\n        count = count + 1;\n        x = x / 10;\n    }\n    for (int i = count - 1; i >= 0; i--) {\n        switch (digits[i]) {\n            case 2: printf(\"er\"); break;\n            case 5: printf(\"wu\"); break;\n            default: printf(\"?\"); break;\n        }\n        if (i > 0) {\n            printf(\" \");\n        }\n    }\n    printf(\"\\n\");\n    return 0;\n}\n",
+    expectedOutput: "er wu\n",
+    explanation: "先用循环把各位从低位拆进数组，再倒着遍历，用 switch 把每个数字换成拼音。取余拆位 + switch 分支，是这类「按位处理」题的标准组合。"
+  },
+  {
+    id: "ex-wk-simplify-fraction",
+    title: "约分最简分式",
+    entryIds: ["function-definition", "function-parameters"],
+    difficulty: 2,
+    prompt: "写一个求最大公约数的函数，把 12/8 约分成最简分式，按 3/2 的格式输出。",
+    requirements: ["必须自己写一个求最大公约数的函数", "函数要接收两个 int 参数并返回 int", "输出最简分式 num/den"],
+    hints: ["辗转相除：当 b 不为 0 时，把 a % b 的结果继续和 b 相除", "分子分母同除以最大公约数就得到最简分式"],
+    starter: "#include <stdio.h>\n\n/* 在这里写求最大公约数的函数 */\n\nint main(void) {\n    /* 用函数约分 12/8 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n\nstatic int gcd(int a, int b) {\n    while (b != 0) {\n        int remainder = a % b;\n        a = b;\n        b = remainder;\n    }\n    return a;\n}\n\nint main(void) {\n    int num = 12;\n    int den = 8;\n    int divisor = gcd(num, den);\n    printf(\"%d/%d\\n\", num / divisor, den / divisor);\n    return 0;\n}\n",
+    expectedOutput: "3/2\n",
+    explanation: "gcd(12, 8) 用辗转相除算出 4，分子分母同时除以 4 得 3/2。把这段逻辑做成函数，main 里只剩「调用 + 输出」两件事，这就是函数存在的意义。"
+  },
+  {
+    id: "ex-wk-prime-sum",
+    title: "求 10 以内素数和",
+    entryIds: ["for-loop", "function-definition"],
+    difficulty: 2,
+    prompt: "写一个判断素数的函数，用它求出 2 到 10 之间所有素数的和，按 sum=17 输出。",
+    requirements: ["必须自己写 is_prime 函数", "主函数里用循环调用它并累加", "输出 sum=总和"],
+    hints: ["小于 2 的数一律不是素数", "判断素数只需试除到 i * i <= n"],
+    starter: "#include <stdio.h>\n\n/* 在这里写判断素数的函数 */\n\nint main(void) {\n    /* 累加 2 到 10 之间的素数 */\n    return 0;\n}\n",
+    solution: "#include <stdio.h>\n\nstatic int is_prime(int n) {\n    if (n < 2) {\n        return 0;\n    }\n    for (int i = 2; i * i <= n; i++) {\n        if (n % i == 0) {\n            return 0;\n        }\n    }\n    return 1;\n}\n\nint main(void) {\n    int sum = 0;\n    for (int n = 2; n <= 10; n++) {\n        if (is_prime(n)) {\n            sum = sum + n;\n        }\n    }\n    printf(\"sum=%d\\n\", sum);\n    return 0;\n}\n",
+    expectedOutput: "sum=17\n",
+    explanation: "2、3、5、7 是 10 以内的素数，加起来等于 17。把「是不是素数」包成一个返回 0/1 的函数，主函数就只能看到判断和累加，读起来清楚得多。"
+  }
+]);
   </script>
   <script data-source="data/keywords.generated.js">
 (function () {
@@ -6615,7 +7436,8 @@ window.C_SYNTAX_ADD_EXERCISES([
       + "【生成结果】\n" + String(text || "");
   }
 
-  function createExerciseGenerate(exercise) {
+  function createExerciseGenerate(exercise, options) {
+    var generateOptions = options || {};
     var cached = exerciseGenerations.get(exercise.id);
     if (!cached) {
       cached = { count: 3, note: "", status: "idle", text: "", error: "" };
@@ -6623,7 +7445,8 @@ window.C_SYNTAX_ADD_EXERCISES([
     }
 
     var block = createElement("div", "exercise-generate");
-    block.appendChild(createElement("h5", "exercise-subtitle", "让 AI 再出几道同类题"));
+    block.appendChild(createElement("h5", "exercise-subtitle",
+      generateOptions.heading || "让 AI 再出几道同类题"));
     var controls = createElement("div", "exercise-generate-controls");
     var countLabel = createElement("label", "exercise-generate-count");
     countLabel.appendChild(document.createTextNode("题量 "));
@@ -6646,8 +7469,10 @@ window.C_SYNTAX_ADD_EXERCISES([
     noteInput.value = cached.note;
     controls.appendChild(noteInput);
 
-    var generateButton = createElement("button", "exercise-generate-button", "生成新题目");
+    var generateButton = createElement("button", "exercise-generate-button",
+      generateOptions.buttonText || "生成新题目");
     generateButton.type = "button";
+    generateButton.setAttribute("aria-label", generateOptions.ariaLabel || "生成新的同类练习题");
     controls.appendChild(generateButton);
     block.appendChild(controls);
 
@@ -6694,6 +7519,55 @@ window.C_SYNTAX_ADD_EXERCISES([
       });
       actions.appendChild(continueButton);
       output.appendChild(actions);
+
+      // AI 生成的题目同样要能"让 DeepSeek 检查我的代码"：
+      // 复用内置练习那套 reviewCode，把刚生成的题目文本作为题目上下文一起发过去
+      var generatedDraftKey = "generated:" + exercise.id;
+      var generatedReview = createElement("div", "exercise-review");
+      var generatedReviewLabel = createElement("label", "exercise-subtitle", "让 DeepSeek 检查我的代码");
+      var generatedReviewInput = document.createElement("textarea");
+      generatedReviewInput.rows = 6;
+      generatedReviewInput.className = "exercise-code-input";
+      generatedReviewInput.placeholder = "把你按上面题目写的代码粘到这里";
+      generatedReviewLabel.htmlFor = generatedDraftKey + "-review-code";
+      generatedReviewInput.id = generatedDraftKey + "-review-code";
+      generatedReviewInput.value = exerciseDrafts.get(generatedDraftKey) || "";
+      enableCodeIndent(generatedReviewInput);
+      generatedReviewInput.addEventListener("input", function () {
+        saveExerciseDraft(generatedDraftKey, generatedReviewInput.value);
+      });
+      var generatedReviewButton = createElement("button", "exercise-review-button", "让 DeepSeek 检查我的代码");
+      generatedReviewButton.type = "button";
+      generatedReviewButton.addEventListener("click", function () {
+        var code = generatedReviewInput.value.trim();
+        if (!code) {
+          showToast("请先粘贴你写的代码");
+          generatedReviewInput.focus();
+          return;
+        }
+        if (!hasDeepSeekKey()) {
+          if (window.C_SYNTAX_CHAT && typeof window.C_SYNTAX_CHAT.open === "function") window.C_SYNTAX_CHAT.open();
+          showToast("请先在对话面板填入 DeepSeek API Key");
+          return;
+        }
+        if (!window.C_SYNTAX_CHAT || typeof window.C_SYNTAX_CHAT.reviewCode !== "function") {
+          showToast("DeepSeek 模块尚未就绪");
+          return;
+        }
+        window.C_SYNTAX_CHAT.reviewCode({
+          exercise: {
+            id: generatedDraftKey,
+            title: exercise.title,
+            prompt: "（这是刚刚生成的练习题，请按它的要求检查我的代码）\n" + cached.text,
+            requirements: []
+          },
+          code: code
+        });
+      });
+      generatedReview.appendChild(generatedReviewLabel);
+      generatedReview.appendChild(generatedReviewInput);
+      generatedReview.appendChild(generatedReviewButton);
+      output.appendChild(generatedReview);
     }
 
     function refreshLatestOutput() {
@@ -6702,6 +7576,13 @@ window.C_SYNTAX_ADD_EXERCISES([
     }
 
     function startGeneration() {
+      if (generateOptions.openChatForMissingKey && !hasDeepSeekKey()) {
+        if (window.C_SYNTAX_CHAT && typeof window.C_SYNTAX_CHAT.open === "function") {
+          window.C_SYNTAX_CHAT.open();
+          showToast("请先在对话面板填入 DeepSeek API Key");
+        } else showToast("DeepSeek 模块尚未就绪");
+        return;
+      }
       cached.count = Number(countSelect.value) || 3;
       cached.note = noteInput.value.trim();
       cached.status = "loading";
@@ -6745,8 +7626,39 @@ window.C_SYNTAX_ADD_EXERCISES([
     return block;
   }
 
+  function entryGenerateExercise(entry) {
+    var notes = Array.isArray(entry.notes) ? entry.notes : [];
+    return {
+      id: "entry:" + entry.id,
+      title: entry.name,
+      entryIds: [entry.id],
+      difficulty: 1,
+      prompt: "请围绕词条名称“" + entry.name + "”出题。\n语法：" + String(entry.syntax || "") +
+        "\n注意事项：" + (notes.join("；") || "请遵循该词条在 C11 中的标准用法。"),
+      requirements: [
+        "题目必须直接练习“" + entry.name + "”",
+        "参考答案应体现该词条的语法和注意事项",
+        "程序输出必须确定且能用 gcc -std=c11 -Wall -Wextra 验证"
+      ]
+    };
+  }
+
   function renderExercises(entry) {
     var matched = exercisesForEntry(exercises, entry.id);
+    var entryGenerateSection = section(matched.length ? "AI 出题" : "练习");
+    entryGenerateSection.classList.add("exercise-section", "exercise-entry-generate");
+    if (!matched.length) {
+      entryGenerateSection.classList.add("exercise-empty");
+      entryGenerateSection.appendChild(createElement("p", "exercise-empty-message", "这个词条还没有内置练习题。"));
+    }
+    var buttonText = "让 AI 出几道关于「" + entry.name + "」的题";
+    entryGenerateSection.appendChild(createExerciseGenerate(entryGenerateExercise(entry), {
+      heading: "按当前词条生成练习",
+      buttonText: buttonText,
+      ariaLabel: buttonText,
+      openChatForMissingKey: true
+    }));
+    detailPanel.appendChild(entryGenerateSection);
     if (!matched.length) return;
 
     var exerciseSection = section("练习（共 " + matched.length + " 道）");
@@ -7149,11 +8061,15 @@ window.C_SYNTAX_ADD_EXERCISES([
   var REVIEW_RULE = "现在是批改模式：请只检查学生的代码并给建议。指出问题（编译错误、逻辑错误、边界、风格）时要点明原因和位置；"
     + "不要重写学生的代码、不要直接给出完整答案；需要示例时最多给 1–2 行片段。回答用简体中文、分条、尽量短。";
 
-  var GENERATE_RULE = "现在是出题模式：围绕【当前练习】的知识点，出 {N} 道由易到难的练习题。"
-    + "每题都要给出【题目】、【要求】（3–5 条可判定要求）、【提示】、【参考答案】和【预期输出】；"
-    + "【参考答案】必须是完整可编译的 C 程序，包含 int main(void) 与 return 0;；"
+  var GENERATE_RULE = "现在是出题模式：围绕【当前练习】的知识点，出 {N} 道**基础难度**的练习题。"
+    + "风格请参考浙江大学翁恺《程序设计入门——C 语言》的课后练习：题目短（参考答案 8–15 行）、只考一个知识点、"
+    + "把输入输出格式写清楚（例如「按 fahr=150 celsius=65 的格式输出一行」），像「温度转换」「时间换算」「逆序三位数」「数位数」「判断闰年」那样的小题。"
+    + "每道题只允许出现最基础的函数：printf，加上整数运算、if、for/while、switch，最多再有一个自己写的小函数；"
+    + "不要用 scanf 等需要键盘输入的东西；不要读写真实文件，也不要用 tmpfile；不要用 freopen、动态内存、可变参数、递归或位运算。"
+    + "每题都要给出【题目】、【要求】（2–4 条可判定要求，越直白越好）、【提示】、【参考答案】和【预期输出】；"
+    + "【参考答案】必须是完整可编译的 C 程序，包含 int main(void) 与 return 0;，并且尽量短；"
     + "【预期输出】必须与程序实际输出逐字节一致。答案必须能通过 gcc -std=c11 -Wall -Wextra 零告警；"
-    + "不要用 scanf 等需要键盘输入的东西；不要读写真实文件，也不要用 tmpfile；输出只用 ASCII（英文、数字、符号），避免中文乱码。"
+    + "输出只用 ASCII（英文、数字、符号），避免中文乱码。"
     + "不要重复当前已有的这道题，不要输出与 C 语言无关的内容；用简体中文讲解。"
     + "只输出题目本身，不要客套话，不要重写用户已有的代码。";
 
@@ -7280,9 +8196,10 @@ window.C_SYNTAX_ADD_EXERCISES([
       "要求：\n" + requirements.map(function (requirement, index) {
         return (index + 1) + ". " + requirement;
       }).join("\n"),
-      "难度：" + difficulty,
+      "难度：" + difficulty + "（出题时请按入门水平来，宁可简单也不要偏难）",
       "关联词条：" + (exerciseEntryNames(item).join("、") || "无"),
-      "题量：" + amount
+      "题量：" + amount,
+      "难度偏好：像浙大翁恺课后题那样的小题——只考一个知识点、参考答案 8~15 行、输入输出格式写清楚，只用 printf 与整数运算 / if / for / while / switch（最多再有一个自己写的小函数）"
     ];
     var trimmedNote = String(note || "").trim();
     if (trimmedNote) lines.push("侧重：" + trimmedNote);

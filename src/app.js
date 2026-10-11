@@ -837,7 +837,8 @@
       + "【生成结果】\n" + String(text || "");
   }
 
-  function createExerciseGenerate(exercise) {
+  function createExerciseGenerate(exercise, options) {
+    var generateOptions = options || {};
     var cached = exerciseGenerations.get(exercise.id);
     if (!cached) {
       cached = { count: 3, note: "", status: "idle", text: "", error: "" };
@@ -845,7 +846,8 @@
     }
 
     var block = createElement("div", "exercise-generate");
-    block.appendChild(createElement("h5", "exercise-subtitle", "让 AI 再出几道同类题"));
+    block.appendChild(createElement("h5", "exercise-subtitle",
+      generateOptions.heading || "让 AI 再出几道同类题"));
     var controls = createElement("div", "exercise-generate-controls");
     var countLabel = createElement("label", "exercise-generate-count");
     countLabel.appendChild(document.createTextNode("题量 "));
@@ -868,8 +870,10 @@
     noteInput.value = cached.note;
     controls.appendChild(noteInput);
 
-    var generateButton = createElement("button", "exercise-generate-button", "生成新题目");
+    var generateButton = createElement("button", "exercise-generate-button",
+      generateOptions.buttonText || "生成新题目");
     generateButton.type = "button";
+    generateButton.setAttribute("aria-label", generateOptions.ariaLabel || "生成新的同类练习题");
     controls.appendChild(generateButton);
     block.appendChild(controls);
 
@@ -916,6 +920,55 @@
       });
       actions.appendChild(continueButton);
       output.appendChild(actions);
+
+      // AI 生成的题目同样要能"让 DeepSeek 检查我的代码"：
+      // 复用内置练习那套 reviewCode，把刚生成的题目文本作为题目上下文一起发过去
+      var generatedDraftKey = "generated:" + exercise.id;
+      var generatedReview = createElement("div", "exercise-review");
+      var generatedReviewLabel = createElement("label", "exercise-subtitle", "让 DeepSeek 检查我的代码");
+      var generatedReviewInput = document.createElement("textarea");
+      generatedReviewInput.rows = 6;
+      generatedReviewInput.className = "exercise-code-input";
+      generatedReviewInput.placeholder = "把你按上面题目写的代码粘到这里";
+      generatedReviewLabel.htmlFor = generatedDraftKey + "-review-code";
+      generatedReviewInput.id = generatedDraftKey + "-review-code";
+      generatedReviewInput.value = exerciseDrafts.get(generatedDraftKey) || "";
+      enableCodeIndent(generatedReviewInput);
+      generatedReviewInput.addEventListener("input", function () {
+        saveExerciseDraft(generatedDraftKey, generatedReviewInput.value);
+      });
+      var generatedReviewButton = createElement("button", "exercise-review-button", "让 DeepSeek 检查我的代码");
+      generatedReviewButton.type = "button";
+      generatedReviewButton.addEventListener("click", function () {
+        var code = generatedReviewInput.value.trim();
+        if (!code) {
+          showToast("请先粘贴你写的代码");
+          generatedReviewInput.focus();
+          return;
+        }
+        if (!hasDeepSeekKey()) {
+          if (window.C_SYNTAX_CHAT && typeof window.C_SYNTAX_CHAT.open === "function") window.C_SYNTAX_CHAT.open();
+          showToast("请先在对话面板填入 DeepSeek API Key");
+          return;
+        }
+        if (!window.C_SYNTAX_CHAT || typeof window.C_SYNTAX_CHAT.reviewCode !== "function") {
+          showToast("DeepSeek 模块尚未就绪");
+          return;
+        }
+        window.C_SYNTAX_CHAT.reviewCode({
+          exercise: {
+            id: generatedDraftKey,
+            title: exercise.title,
+            prompt: "（这是刚刚生成的练习题，请按它的要求检查我的代码）\n" + cached.text,
+            requirements: []
+          },
+          code: code
+        });
+      });
+      generatedReview.appendChild(generatedReviewLabel);
+      generatedReview.appendChild(generatedReviewInput);
+      generatedReview.appendChild(generatedReviewButton);
+      output.appendChild(generatedReview);
     }
 
     function refreshLatestOutput() {
@@ -924,6 +977,13 @@
     }
 
     function startGeneration() {
+      if (generateOptions.openChatForMissingKey && !hasDeepSeekKey()) {
+        if (window.C_SYNTAX_CHAT && typeof window.C_SYNTAX_CHAT.open === "function") {
+          window.C_SYNTAX_CHAT.open();
+          showToast("请先在对话面板填入 DeepSeek API Key");
+        } else showToast("DeepSeek 模块尚未就绪");
+        return;
+      }
       cached.count = Number(countSelect.value) || 3;
       cached.note = noteInput.value.trim();
       cached.status = "loading";
@@ -967,8 +1027,39 @@
     return block;
   }
 
+  function entryGenerateExercise(entry) {
+    var notes = Array.isArray(entry.notes) ? entry.notes : [];
+    return {
+      id: "entry:" + entry.id,
+      title: entry.name,
+      entryIds: [entry.id],
+      difficulty: 1,
+      prompt: "请围绕词条名称“" + entry.name + "”出题。\n语法：" + String(entry.syntax || "") +
+        "\n注意事项：" + (notes.join("；") || "请遵循该词条在 C11 中的标准用法。"),
+      requirements: [
+        "题目必须直接练习“" + entry.name + "”",
+        "参考答案应体现该词条的语法和注意事项",
+        "程序输出必须确定且能用 gcc -std=c11 -Wall -Wextra 验证"
+      ]
+    };
+  }
+
   function renderExercises(entry) {
     var matched = exercisesForEntry(exercises, entry.id);
+    var entryGenerateSection = section(matched.length ? "AI 出题" : "练习");
+    entryGenerateSection.classList.add("exercise-section", "exercise-entry-generate");
+    if (!matched.length) {
+      entryGenerateSection.classList.add("exercise-empty");
+      entryGenerateSection.appendChild(createElement("p", "exercise-empty-message", "这个词条还没有内置练习题。"));
+    }
+    var buttonText = "让 AI 出几道关于「" + entry.name + "」的题";
+    entryGenerateSection.appendChild(createExerciseGenerate(entryGenerateExercise(entry), {
+      heading: "按当前词条生成练习",
+      buttonText: buttonText,
+      ariaLabel: buttonText,
+      openChatForMissingKey: true
+    }));
+    detailPanel.appendChild(entryGenerateSection);
     if (!matched.length) return;
 
     var exerciseSection = section("练习（共 " + matched.length + " 道）");

@@ -40,6 +40,9 @@ const expectedDataScripts = [
   "data/entries/90-pitfalls.js",
   "data/exercises/10-basics.js",
   "data/exercises/20-advanced.js",
+  "data/exercises/30-stdio-and-more.js",
+  "data/exercises/40-more-functions.js",
+  "data/exercises/50-wengkai.js",
   "data/keywords.generated.js"
 ];
 const baseFiles = ["index.html", "styles.css", "app.js", "chat.js", "tools/verify.mjs",
@@ -729,8 +732,28 @@ check(tmpfileExerciseIds.length === 0,
 check(crlfExpectedOutputExerciseIds.length === 0,
   "练习 expectedOutput 统一使用 LF（不含 \\r）",
   `练习 id：${crlfExpectedOutputExerciseIds.join("、")}`);
-check(exercises.length >= 60, `练习总数不少于 60（实际 ${exercises.length}）`);
+check(exercises.length >= 90, `练习总数不少于 90（实际 ${exercises.length}）`);
 const exercisedEntryIds = new Set(exercises.flatMap(exercise => Array.isArray(exercise.entryIds) ? exercise.entryIds : []));
+check(exercisedEntryIds.size >= 105, `有练习覆盖的词条数不少于 105（实际 ${exercisedEntryIds.size}）`);
+const invalidExerciseEntryIds = exercises.flatMap(exercise =>
+  (Array.isArray(exercise.entryIds) ? exercise.entryIds : [])
+    .filter(entryId => !ids.has(entryId)).map(entryId => `${exercise.id} -> ${entryId}`));
+check(invalidExerciseEntryIds.length === 0, "全部练习 entryIds 均引用真实词条", invalidExerciseEntryIds.join("；"));
+const requiredExerciseEntryNames = [
+  "scanf", "getchar", "putchar", "puts", "sprintf", "fopen", "fgetc", "fputc",
+  "strncpy", "memcpy", "memset", "union", "atoi", "rand", "NULL"
+];
+const uncoveredRequiredNames = [];
+for (const requiredName of requiredExerciseEntryNames) {
+  const matches = entries.filter(entry => entry.name === requiredName || entry.name.startsWith(`${requiredName} `));
+  if (!matches.length) {
+    console.log(`SKIP 点名词条不存在：${requiredName}`);
+    continue;
+  }
+  if (!matches.some(entry => exercisedEntryIds.has(entry.id))) uncoveredRequiredNames.push(requiredName);
+}
+check(uncoveredRequiredNames.length === 0,
+  "用户点名的高频词条均至少有一道练习", uncoveredRequiredNames.join("、"));
 console.log(`INFO 有练习的词条数：${exercisedEntryIds.size} / ${entries.length}；expectedOutput 为空：${emptyExpectedOutputCount} 道`);
 const exerciseVerifierSource = readFileSync(join(root, "tools", "verify-exercises.mjs"), "utf8");
 check(/stdio:\s*\["ignore", stdoutDescriptor, stderrDescriptor\]/.test(exerciseVerifierSource) &&
@@ -843,6 +866,22 @@ check(/if \(hasDeepSeekKey\(\)\) \{[\s\S]*?exercise-review[\s\S]*?createExercise
 check(/new Map\(\)/.test(appSource) && /exerciseGenerations\.get\(exercise\.id\)/.test(appSource) &&
   /exerciseGenerations\.set\(exercise\.id, cached\)/.test(appSource) && /count: 3/.test(appSource),
   "出题结果与默认题量 3 按练习 id 缓存在内存 Map");
+const entryGenerateSource = appSource.match(/function entryGenerateExercise\(entry\)[\s\S]*?\n  function renderExercises\(/)?.[0] || "";
+check(/if \(!matched\.length\)/.test(exerciseRenderSource) &&
+  /这个词条还没有内置练习题/.test(exerciseRenderSource) &&
+  /让 AI 出几道关于「/.test(exerciseRenderSource) && /ariaLabel: buttonText/.test(exerciseRenderSource) &&
+  /createExerciseGenerate\(entryGenerateExercise\(entry\)/.test(exerciseRenderSource),
+  "无内置练习的词条渲染带中文 aria-label 的 AI 出题真按钮，并复用现有出题区块");
+check(exerciseRenderSource.indexOf("createExerciseGenerate(entryGenerateExercise(entry)") <
+  exerciseRenderSource.indexOf("if (!matched.length) return"),
+  "词条级 AI 出题入口在有无内置练习时都可见，原有练习卡片保持不变");
+check(/id: "entry:" \+ entry\.id/.test(entryGenerateSource) && /title: entry\.name/.test(entryGenerateSource) &&
+  /entry\.syntax/.test(entryGenerateSource) && /notes\.join/.test(entryGenerateSource) &&
+  /entryIds: \[entry\.id\]/.test(entryGenerateSource),
+  "词条伪练习对象包含词条 id、名称、syntax 与注意事项");
+check(/openChatForMissingKey && !hasDeepSeekKey\(\)/.test(appSource) &&
+  /C_SYNTAX_CHAT\.open\(\)/.test(appSource),
+  "无 Key 点击词条出题按钮会打开现有对话面板供填写 Key");
 check(/exercise-generate-output/.test(appSource) && /"复制"/.test(appSource) && /"再来一批"/.test(appSource) &&
   /"在对话里继续问"/.test(appSource) && /generateButton\.disabled = cached\.status === "loading"/.test(appSource),
   "出题结果窗口包含复制、再来一批、在对话里继续问，并在生成中禁用按钮");

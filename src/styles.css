@@ -442,6 +442,9 @@ summary.roadmap-heading { margin: 0; padding: 13px 16px; cursor: pointer; }
 .roadmap-fallback-detail { display: block; color: var(--muted); font-size: 0.78rem; }
 
 .exercise-section { padding-top: 4px; border-top: 1px solid var(--border); }
+.exercise-entry-generate { margin-top: 18px; padding: 18px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface-2); }
+.exercise-empty-message { margin: 0; color: var(--muted); line-height: 1.7; }
+.exercise-entry-generate .exercise-generate { margin-top: 12px; }
 .exercise-card { margin-top: 14px; padding: 18px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface-2); }
 .exercise-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; }
 .exercise-title { margin: 0; font-size: 1.04rem; }
@@ -461,8 +464,20 @@ summary.roadmap-heading { margin: 0; padding: 13px 16px; cursor: pointer; }
 .exercise-toggle[aria-expanded="true"] { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
 .exercise-disclosure { margin-top: 10px; padding: 12px; border-left: 3px solid var(--accent); border-radius: 12px; background: var(--surface); }
 .exercise-answer { padding: 0; border-left: 0; background: transparent; }
-.exercise-output { margin-top: 15px; padding: 11px 12px; border: 1px dashed var(--border); border-radius: 14px; background: var(--surface); }
-.exercise-output pre { margin: 7px 0 0; padding: 0; background: transparent; color: var(--text); white-space: pre-wrap; }
+/* 「运行后应该看到」：左侧改成一条直的强调竖线，左边不留圆角，字号与行高放大一档，读起来更清楚 */
+.exercise-output { margin-top: 15px; padding: 12px 14px 12px 14px; border: 1px dashed var(--border); border-left: 3px solid var(--accent); border-radius: 0 14px 14px 0; background: var(--surface); }
+.exercise-output pre {
+  margin: 7px 0 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+  white-space: pre-wrap;
+}
+.exercise-output .exercise-label { display: block; margin-bottom: 2px; }
 .exercise-review { display: grid; gap: 9px; margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--border); }
 .exercise-review .exercise-subtitle { margin: 0; }
 .exercise-code-input { width: 100%; min-height: 150px; padding: 10px 11px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--text); font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; line-height: 1.55; resize: vertical; }
